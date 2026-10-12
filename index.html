@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AltoqueSalud | Citas médicas por internet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --bg: #ffffff; --band: #f4f7fb; --surface: #ffffff; --soft: #eaf3ff;
+    --text: #2a3550; --muted: #667593; --line: #d9e2f0;
+    --head: #16397c; --pink: #d93b5f; --pink-d: #b92c4e; --cyan: #27c6e6; --ok: #15803d;
+    --strip: #2f2a4a; --logo-blue: #1b6fb5; --logo-green: #1f9d46; --ban1: #dde8f6; --ban2: #f5f8fc; --on-pink: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1a33; --band: #122040; --surface: #162646; --soft: #1b2f57;
+      --text: #e6eefc; --muted: #a3b5d6; --line: #2b3f66; --head: #cfe0ff; --pink: #ee5a7d;
+      --strip: #070d1c; --logo-blue: #7bbcf5; --logo-green: #4ade80; --ban1: #17294d; --ban2: #0e1a33; --on-pink: #0e1a33;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1a33; --band: #122040; --surface: #162646; --soft: #1b2f57;
+    --text: #e6eefc; --muted: #a3b5d6; --line: #2b3f66; --head: #cfe0ff; --pink: #ee5a7d;
+    --strip: #070d1c; --logo-blue: #7bbcf5; --logo-green: #4ade80; --ban1: #17294d; --ban2: #0e1a33; --on-pink: #0e1a33;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 16px; line-height: 1.55; color: var(--text); background: var(--bg); }
+  h1, h2, h3 { font-family: "Montserrat", "Poppins", system-ui, sans-serif; color: var(--head); line-height: 1.2; margin: 0 0 10px; }
+  p { margin: 0 0 10px; }
+  a { color: inherit; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+  .strip { height: 7px; background: var(--strip); }
+
+  .topbar { background: var(--band); border-bottom: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 50px; }
+  .topbar svg { vertical-align: -3px; margin-left: 4px; }
+  .topr { display: flex; align-items: center; gap: 18px; }
+  .cta { display: inline-flex; align-items: center; min-height: 50px; padding: 0 28px; background: var(--pink); color: var(--on-pink); font-weight: 600; text-decoration: none; }
+  .cta:hover { background: var(--pink-d); }
+
+  .head { background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; }
+  .head .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 84px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .brand img { width: 56px; height: 56px; border-radius: 14px; object-fit: contain; background: #fff; padding: 3px; border: 2px solid var(--line); }
+  .bn { font-family: "Montserrat", "Poppins", sans-serif; font-size: 28px; font-weight: 700; color: var(--logo-blue); letter-spacing: -.02em; line-height: 1; }
+  .bn b { color: var(--logo-green); font-weight: 700; }
+  nav.main { display: flex; gap: 6px; }
+  nav.main a { position: relative; padding: 30px 16px; font-weight: 600; font-size: 15px; color: var(--head); text-decoration: none; }
+  nav.main a[aria-current="page"]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 0; height: 4px; background: var(--head); border-radius: 3px 3px 0 0; }
+  nav.main a:hover { color: var(--pink); }
+  .burger { display: none; font: inherit; font-size: 24px; background: none; border: 2px solid var(--line); border-radius: 10px; width: 46px; height: 46px; color: var(--head); cursor: pointer; }
+
+  .banner { position: relative; overflow: hidden; text-align: center; padding: 60px 20px 52px; background: linear-gradient(120deg, var(--ban1), var(--ban2)); }
+  .banner::before { content: ""; position: absolute; width: 380px; height: 380px; border-radius: 50%; left: -90px; top: -150px; background: rgba(39,198,230,.22); }
+  .banner::after { content: ""; position: absolute; width: 300px; height: 300px; border-radius: 50%; right: -70px; bottom: -150px; background: rgba(217,59,95,.16); }
+  .banner h1 { position: relative; z-index: 1; font-size: clamp(28px, 4.6vw, 42px); font-weight: 800; letter-spacing: -.01em; margin: 0 0 8px; }
+  .crumb { position: relative; z-index: 1; font-weight: 600; font-size: 15px; color: var(--muted); }
+  .crumb a { color: var(--head); text-decoration: none; }
+
+  .sec { padding: 54px 0; }
+  .sec.band { background: var(--band); }
+  .sec h2 { font-size: clamp(26px, 3.6vw, 34px); font-weight: 700; }
+  .lede { color: var(--muted); max-width: 60ch; }
+  .pink { color: var(--pink); }
+
+  .hero { padding: 54px 0 46px; }
+  .hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: center; }
+  .hero h1 { font-size: clamp(30px, 4.6vw, 50px); font-weight: 800; letter-spacing: -.02em; color: var(--pink); margin-bottom: 16px; }
+  .hero p { font-size: 18px; color: var(--head); max-width: 34em; }
+  .hero-art { position: relative; display: grid; place-items: center; }
+  .hero-art::before { content: ""; position: absolute; inset: 6% 8%; border-radius: 50%; background: var(--soft); }
+  .hero-art img { position: relative; width: min(420px, 92%); height: auto; object-fit: contain; background: #fff; padding: 22px; border-radius: 36px; border: 1px solid var(--line); box-shadow: 0 18px 40px rgba(22,57,124,.22); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+  .btn { font: inherit; font-weight: 600; font-size: 16px; min-height: 52px; padding: 0 26px; border-radius: 8px; border: 2px solid var(--pink); background: var(--pink); color: var(--on-pink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn:hover { background: var(--pink-d); border-color: var(--pink-d); }
+  .btn.out { background: transparent; color: var(--head); border-color: var(--head); }
+  .btn.out:hover { background: var(--soft); }
+  .btn.sm { min-height: 40px; padding: 0 16px; font-size: 14px; }
+  .btn[disabled] { opacity: .5; cursor: not-allowed; }
+  .link { background: none; border: 0; font: inherit; color: var(--pink); font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0; }
+
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+  .card h3 { font-size: 18px; }
+  .num { width: 40px; height: 40px; border-radius: 50%; background: var(--pink); color: var(--on-pink); font-weight: 700; display: grid; place-items: center; margin-bottom: 12px; }
+  .esp { text-align: left; font: inherit; color: inherit; cursor: pointer; }
+  .esp .ic { font-size: 34px; line-height: 1; display: block; margin-bottom: 10px; }
+  .esp:hover, .esp[aria-pressed="true"] { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(217,59,95,.18); }
+  .esp p { color: var(--muted); font-size: 14px; margin: 0; }
+  .find { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+
+  .field { display: grid; gap: 6px; margin: 0 0 14px; }
+  .field > span { font-weight: 600; font-size: 15px; color: var(--head); }
+  .field input, .field textarea, .field select { font: inherit; color: var(--text); background: var(--surface); border: 2px solid var(--line); border-radius: 10px; padding: 12px 14px; width: 100%; min-height: 50px; }
+  .field textarea { min-height: 90px; resize: vertical; }
+  .field .err { color: var(--pink-d); font-size: 14px; font-weight: 500; min-height: 0; }
+  :root[data-theme="dark"] .field .err { color: #ff9db3; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin: 0 0 14px; }
+  .check input { width: 22px; height: 22px; margin-top: 2px; accent-color: var(--pink); flex: none; }
+
+  .wsteps { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0 0 26px; counter-reset: w; }
+  .wsteps li { flex: 1; counter-increment: w; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; color: var(--muted); padding-bottom: 10px; border-bottom: 4px solid var(--line); }
+  .wsteps li::before { content: counter(w); width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--line); color: var(--text); flex: none; }
+  .wsteps li.on { color: var(--head); border-color: var(--pink); }
+  .wsteps li.on::before, .wsteps li.done::before { background: var(--pink); color: var(--on-pink); }
+  .wsteps li.done { border-color: var(--head); color: var(--head); }
+  .wbox { max-width: 860px; margin: 0 auto; }
+  .chipsrow { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 22px; }
+  .pill { font: inherit; font-weight: 600; font-size: 15px; min-height: 48px; padding: 0 18px; border-radius: 999px; border: 2px solid var(--line); background: var(--surface); color: var(--head); cursor: pointer; }
+  .pill:hover { border-color: var(--pink); }
+  .pill[aria-pressed="true"] { background: var(--head); color: var(--bg); border-color: var(--head); }
+  .pill[disabled] { opacity: .45; text-decoration: line-through; cursor: not-allowed; }
+  .pill.small { min-height: 36px; padding: 0 14px; font-size: 14px; }
+  .resumen { background: var(--soft); border-radius: 12px; padding: 14px 16px; margin: 0 0 18px; display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; justify-content: space-between; }
+  .ticket { border: 2px dashed var(--pink); border-radius: 16px; padding: 22px; background: var(--surface); text-align: center; }
+  .ticket .code { font-family: "Montserrat", "Poppins", sans-serif; font-size: 32px; font-weight: 800; color: var(--pink); letter-spacing: .04em; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .cita { display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; align-items: center; }
+  .cita + .cita { margin-top: 12px; }
+  .badge { display: inline-block; font-size: 13px; font-weight: 600; padding: 2px 12px; border-radius: 999px; background: var(--soft); color: var(--head); }
+  .badge.ok { background: #d8f5e3; color: #14532d; }
+  .badge.no { background: #fde2e8; color: #8a1f3a; }
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 620px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { background: var(--band); color: var(--head); }
+  .note { font-size: 14px; color: var(--muted); }
+
+  footer { background: var(--strip); color: #dfe7f7; padding: 34px 0; font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 14px 40px; justify-content: space-between; }
+  footer a { color: #fff; }
+
+  /* Asistente flotante */
+  .fab { position: fixed; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 40; display: flex; align-items: center; gap: 10px; }
+  .fab-label { background: #16a34a; color: #fff; font-weight: 600; font-size: 14px; padding: 8px 16px; border-radius: 999px; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+  .fab button { width: 66px; height: 66px; border-radius: 50%; border: 3px solid var(--logo-green); padding: 0; background: #fff; cursor: pointer; overflow: hidden; box-shadow: 0 8px 22px rgba(0,0,0,.3); }
+  .fab button img { width: 100%; height: 100%; object-fit: contain; padding: 8px; display: block; }
+  .chat { position: fixed; right: 18px; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); z-index: 50; width: 390px; height: min(620px, calc(100% - 130px)); background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 18px 50px rgba(8,20,50,.35); display: flex; flex-direction: column; overflow: hidden; }
+  .chat-top { background: var(--head); color: #fff; display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+  :root[data-theme="dark"] .chat-top, :root:not([data-theme="light"]) .chat-top { }
+  .chat-top img { width: 44px; height: 44px; border-radius: 50%; object-fit: contain; background: #fff; padding: 5px; border: 2px solid #fff; }
+  .chat-top b { display: block; line-height: 1.15; }
+  .chat-top small { opacity: .85; }
+  .chat-top button { margin-left: auto; font: inherit; font-size: 22px; line-height: 1; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.18); color: #fff; cursor: pointer; }
+  .clog { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--band); scroll-behavior: smooth; }
+  .msg { max-width: 88%; padding: 10px 14px; border-radius: 16px; font-size: 15px; overflow-wrap: anywhere; animation: pop .2s ease-out; }
+  .msg.bot { align-self: flex-start; background: var(--surface); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .msg.me { align-self: flex-end; background: var(--head); color: var(--bg); border-bottom-right-radius: 4px; }
+  @keyframes pop { from { transform: scale(.95); opacity: 0; } to { transform: none; opacity: 1; } }
+  .typing { align-self: flex-start; display: flex; gap: 5px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
+  .typing i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); animation: bounce 1s infinite; }
+  .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font: inherit; font-weight: 600; font-size: 14px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 2px solid var(--pink); background: var(--surface); color: var(--pink); cursor: pointer; }
+  .chip:hover { background: var(--pink); color: var(--on-pink); }
+  .cform { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--line); background: var(--surface); }
+  .cform input { flex: 1; min-width: 0; font: inherit; color: var(--text); background: var(--bg); border: 2px solid var(--line); border-radius: 999px; padding: 0 16px; min-height: 46px; }
+  .cform button { font: inherit; font-weight: 600; min-height: 46px; padding: 0 18px; border-radius: 999px; border: 0; background: var(--pink); color: var(--on-pink); cursor: pointer; }
+  .mini strong { display: block; margin-bottom: 4px; }
+  .rows div { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; border-bottom: 1px dashed var(--line); }
+  .rows div span:last-child { text-align: right; }
+  .ckl { list-style: none; margin: 4px 0 6px; padding: 0; display: grid; gap: 6px; }
+  .ckl label { display: flex; gap: 10px; align-items: center; cursor: pointer; }
+  .ckl input { width: 20px; height: 20px; accent-color: var(--pink); }
+  .ckl input:checked ~ span { text-decoration: line-through; color: var(--muted); }
+
+  /* Proyecto */
+  .ptabs { display: flex; gap: 8px; overflow-x: auto; margin: 0 0 24px; padding-bottom: 6px; }
+  .ptab { flex: none; font: inherit; font-weight: 600; font-size: 15px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 2px solid var(--line); background: var(--surface); color: var(--head); cursor: pointer; }
+  .ptab[aria-selected="true"] { background: var(--head); color: var(--bg); border-color: var(--head); }
+  .pp { max-width: 860px; }
+  .pp .card { margin-bottom: 14px; }
+  .pp ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+  .quote { border-left: 4px solid var(--pink); padding: 2px 0 2px 12px; margin: 0 0 8px; }
+  .steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: s; }
+  .steps li { counter-increment: s; display: flex; gap: 10px; align-items: flex-start; }
+  .steps li::before { content: counter(s); flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--pink); color: var(--on-pink); font-weight: 700; display: grid; place-items: center; font-size: 14px; }
+  .map { display: grid; gap: 8px; }
+  .map div { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+  .map .pain { background: var(--band); border-radius: 10px; padding: 8px 12px; }
+  .map .fix { background: var(--soft); border-radius: 10px; padding: 8px 12px; font-weight: 500; color: var(--head); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .sk { border: 2px dashed var(--muted); border-radius: 16px; padding: 10px; background: var(--surface); min-height: 300px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--muted); }
+  .sk .hd { height: 14px; border-radius: 7px; background: var(--line); }
+  .sk .bub { border: 2px solid var(--muted); border-radius: 12px; padding: 4px 9px; width: 78%; }
+  .sk .bub.r { align-self: flex-end; background: var(--soft); width: 60%; }
+  .sk .inp { margin-top: auto; border: 2px solid var(--muted); border-radius: 16px; padding: 5px 12px; }
+  .sk .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .sk .tile { border: 2px solid var(--muted); border-radius: 12px; height: 56px; display: grid; place-items: center; text-align: center; padding: 4px; }
+  .sk .btnsk { margin-top: auto; text-align: center; border-radius: 8px; background: var(--line); padding: 8px; font-weight: 600; color: var(--text); }
+  .facts { margin: 10px 0 0; display: grid; gap: 4px; font-size: 14px; color: var(--text); }
+  .thumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+  .thumb { position: relative; width: 96px; height: 96px; border: 2px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb button { position: absolute; top: 3px; right: 3px; width: 26px; height: 26px; border-radius: 50%; border: 0; background: var(--pink); color: var(--on-pink); font-weight: 700; cursor: pointer; padding: 0; }
+  .q { font-weight: 600; margin: 0 0 6px; color: var(--head); }
+  .rate { display: flex; gap: 6px; margin: 0 0 14px; flex-wrap: wrap; }
+  .gbadge { font-size: 13px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--band); margin-left: 8px; vertical-align: middle; }
+  .gbadge.ok { background: #d8f5e3; color: #14532d; }
+  #informe { min-height: 320px; line-height: 1.5; }
+  .team { display: grid; gap: 10px; }
+  .team label { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+  .team input { font: inherit; color: var(--text); background: var(--surface); border: 2px solid var(--line); border-radius: 10px; padding: 8px 12px; width: 100%; min-height: 44px; }
+  .count { font-weight: 600; margin: 0 0 6px; }
+
+  button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .skip { position: absolute; left: -999px; top: 0; background: var(--pink); color: var(--on-pink); padding: 10px 16px; z-index: 100; }
+  .skip:focus { left: 10px; top: 10px; }
+
+  @media (max-width: 900px) {
+    .burger { display: inline-grid; place-items: center; }
+    nav.main { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--surface); border-bottom: 1px solid var(--line); flex-direction: column; padding: 8px 20px 14px; gap: 0; }
+    nav.main.open { display: flex; }
+    nav.main a { padding: 14px 4px; border-bottom: 1px solid var(--line); }
+    nav.main a[aria-current="page"]::after { display: none; }
+    nav.main a[aria-current="page"] { color: var(--pink); }
+    .hero .wrap { grid-template-columns: 1fr; }
+    .hero-art { order: -1; max-width: 240px; margin: 0 auto; }
+    .grid3, .grid4 { grid-template-columns: 1fr 1fr; }
+    .tag { display: none; }
+    .topbar .wrap { justify-content: flex-end; }
+    .hrs { display: none; }
+  }
+  @media (max-width: 600px) {
+    .grid3, .grid4, .row2, .two, .map div, .team label { grid-template-columns: 1fr; }
+    .sec { padding: 38px 0; }
+    .wsteps li span { display: none; }
+    .cita { grid-template-columns: 1fr; }
+    .chat { right: 0; left: 0; bottom: 0; width: 100%; height: 100%; max-height: 100%; border-radius: 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
+    .fab-label { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .msg, .typing i { animation: none; } .clog { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#contenido">Ir al contenido</a>
+<div class="strip"></div>
+<div class="topbar">
+  <div class="wrap">
+    <span class="tag">Atención en salud oportuna, sin hacer cola
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/><path d="M3.5 12h4l2-3 3 6 2-3h6"/></svg>
+    </span>
+    <div class="topr">
+      <span class="hrs">Lun a sáb, 7:30 a 13:00 (ejemplo)</span>
+      <a class="cta" href="#" data-go="cita">Agenda una cita</a>
+    </div>
+  </div>
+</div>
+
+<header class="head">
+  <div class="wrap">
+    <a class="brand" href="#" data-go="inicio" aria-label="AltoqueSalud, inicio">
+      <img class="logo-img" data-v="icon" alt="Logo de AltoqueSalud">
+      <span class="bn">Altoque<b>Salud</b></span>
+    </a>
+    <button class="burger" id="burger" type="button" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <nav class="main" id="nav" aria-label="Principal">
+      <a href="#" data-go="inicio">Inicio</a>
+      <a href="#" data-go="especialidades">Especialidades</a>
+      <a href="#" data-go="cita">Agenda tu cita</a>
+      <a href="#" data-go="mis-citas">Mis citas</a>
+      <a href="#" data-go="contacto">Contáctanos</a>
+      <a href="#" data-go="proyecto">Proyecto</a>
+    </nav>
+  </div>
+</header>
+
+<main id="contenido">
+
+<!-- INICIO -->
+<section class="page" id="pg-inicio">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Saca tu cita desde el celular, sin hacer cola.</h1>
+        <p>Elige tu especialidad, escoge el día y la hora, y listo. Tu cita queda en el registro y la consultas con tu DNI cuando quieras.</p>
+        <div class="actions">
+          <a class="btn" href="#" data-go="cita">Agendar mi cita</a>
+          <button class="btn out" type="button" data-chat="open">Preguntar al asistente</button>
+        </div>
+      </div>
+      <div class="hero-art"><img class="logo-img" data-v="full" alt="Logo de AltoqueSalud: una flecha azul hacia arriba y un corazón verde con una cruz"></div>
+    </div>
+  </div>
+
+  <div class="sec band">
+    <div class="wrap">
+      <h2>Tu cita en 3 pasos</h2>
+      <p class="lede">Sin crear cuenta y sin llamar por teléfono.</p>
+      <div class="grid3">
+        <div class="card"><div class="num">1</div><h3>Elige la especialidad</h3><p>Toca la que necesitas.</p></div>
+        <div class="card"><div class="num">2</div><h3>Escoge día y hora</h3><p>Solo ves los horarios libres.</p></div>
+        <div class="card"><div class="num">3</div><h3>Confirma con tu DNI</h3><p>Recibes tu código y queda registrada.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="wrap">
+      <h2>Especialidades</h2>
+      <p class="lede">Toca una para empezar a agendar.</p>
+      <div class="grid3" id="espPreview"></div>
+    </div>
+  </div>
+
+  <div class="sec band">
+    <div class="wrap">
+      <h2>¿Ya tienes una cita?</h2>
+      <p class="lede">Escribe tu DNI y la ves, o la cancelas si ya no puedes ir.</p>
+      <form class="find" id="findForm">
+        <label class="field" style="margin:0;min-width:240px"><span>Tu DNI</span><input type="text" inputmode="numeric" maxlength="8" id="findDni" placeholder="8 dígitos" autocomplete="off"></label>
+        <button class="btn" type="submit">Ver mis citas</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="wrap">
+      <h2>Por qué usar AltoqueSalud</h2>
+      <div class="grid4" style="margin-top:18px">
+        <div class="card"><h3>Sin cola</h3><p>Resuelves tu cita y tus dudas antes de salir de casa.</p></div>
+        <div class="card"><h3>Asistente a cualquier hora</h3><p>Te explica requisitos y horarios cuando lo necesites.</p></div>
+        <div class="card"><h3>Información al día</h3><p>Horarios y documentos que se actualizan, no carteles viejos.</p></div>
+        <div class="card"><h3>Tu cita guardada</h3><p>Queda en un registro que puedes consultar con tu DNI.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ESPECIALIDADES -->
+<section class="page" id="pg-especialidades" hidden>
+  <div class="banner"><h1>Especialidades</h1><div class="crumb"><a href="#" data-go="inicio">Home</a> &nbsp;›&nbsp; Especialidades</div></div>
+  <div class="sec"><div class="wrap">
+    <p class="lede">Elige la que necesitas y agenda en menos de un minuto. Las especialidades son de ejemplo.</p>
+    <div class="grid3" id="espGrid" style="margin-top:20px"></div>
+  </div></div>
+</section>
+
+<!-- CITA -->
+<section class="page" id="pg-cita" hidden>
+  <div class="banner"><h1>Agenda tu cita</h1><div class="crumb"><a href="#" data-go="inicio">Home</a> &nbsp;›&nbsp; Agenda tu cita</div></div>
+  <div class="sec"><div class="wrap"><div class="wbox">
+    <ol class="wsteps" id="wsteps" aria-label="Pasos">
+      <li data-s="1"><span>Especialidad</span></li>
+      <li data-s="2"><span>Día y hora</span></li>
+      <li data-s="3"><span>Tus datos</span></li>
+    </ol>
+
+    <div class="wpane" data-p="1">
+      <h2>¿Qué especialidad necesitas?</h2>
+      <div class="grid3" id="bkEsp"></div>
+    </div>
+
+    <div class="wpane" data-p="2" hidden>
+      <h2>Elige el día</h2>
+      <div class="chipsrow" id="bkDias"></div>
+      <h2>Elige la hora</h2>
+      <div class="chipsrow" id="bkHoras"></div>
+      <button class="link" type="button" data-back="1">Cambiar especialidad</button>
+    </div>
+
+    <div class="wpane" data-p="3" hidden>
+      <h2>Tus datos</h2>
+      <div class="resumen"><span id="bkResumen"></span><button class="link" type="button" data-back="2">Cambiar día u hora</button></div>
+      <form id="bkForm" novalidate>
+        <label class="field"><span>Nombre completo</span><input type="text" id="fNombre" autocomplete="name"><span class="err" id="eNombre"></span></label>
+        <div class="row2">
+          <label class="field"><span>DNI</span><input type="text" id="fDni" inputmode="numeric" maxlength="8" placeholder="8 dígitos" autocomplete="off"><span class="err" id="eDni"></span></label>
+          <label class="field"><span>Celular</span><input type="tel" id="fCel" inputmode="numeric" maxlength="9" placeholder="9 dígitos" autocomplete="tel"><span class="err" id="eCel"></span></label>
+        </div>
+        <label class="field"><span>Motivo de la consulta (opcional)</span><textarea id="fMotivo" placeholder="Cuéntanos en pocas palabras"></textarea></label>
+        <label class="check"><input type="checkbox" id="fOk"><span>Acepto que el centro use estos datos solo para gestionar mi cita.</span></label>
+        <span class="err" id="eOk" style="display:block;margin:-8px 0 10px"></span>
+        <button class="btn" type="submit">Confirmar mi cita</button>
+      </form>
+    </div>
+
+    <div class="wdone" id="bkDone" hidden>
+      <div class="ticket">
+        <h2>Tu cita está confirmada</h2>
+        <div class="code" id="doneCode"></div>
+        <p id="doneInfo"></p>
+        <p class="note">Llega 15 minutos antes con tu DNI. Guarda tu código por si lo necesitas.</p>
+        <div class="actions" style="justify-content:center">
+          <button class="btn" type="button" id="doneVer">Ver mis citas</button>
+          <button class="btn out" type="button" id="doneOtra">Agendar otra</button>
+          <button class="btn out" type="button" id="doneCopy">Copiar código</button>
+        </div>
+        <p class="note" id="doneNote"></p>
+      </div>
+    </div>
+  </div></div></div>
+</section>
+
+<!-- MIS CITAS -->
+<section class="page" id="pg-mis-citas" hidden>
+  <div class="banner"><h1>Mis citas</h1><div class="crumb"><a href="#" data-go="inicio">Home</a> &nbsp;›&nbsp; Mis citas</div></div>
+  <div class="sec"><div class="wrap">
+    <div class="wbox">
+      <h2>Consulta tus citas</h2>
+      <form class="find" id="misForm">
+        <label class="field" style="margin:0;min-width:240px"><span>Tu DNI</span><input type="text" id="misDni" inputmode="numeric" maxlength="8" placeholder="8 dígitos" autocomplete="off"></label>
+        <button class="btn" type="submit">Buscar</button>
+      </form>
+      <p class="err" id="misErr" style="color:var(--pink-d);font-size:14px;margin-top:8px"></p>
+      <div id="misLista" style="margin-top:18px"></div>
+    </div>
+  </div></div>
+  <div class="sec band"><div class="wrap">
+    <h2>Registro de citas</h2>
+    <p class="lede">Vista del centro con todas las citas guardadas en este dispositivo. El DNI aparece parcialmente oculto.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Código</th><th>Paciente</th><th>DNI</th><th>Especialidad</th><th>Fecha</th><th>Hora</th><th>Estado</th></tr></thead>
+      <tbody id="regBody"></tbody>
+    </table></div>
+    <div class="actions"><button class="btn out sm" type="button" id="regCsv" hidden>Descargar registro (.csv)</button></div>
+    <p class="note">En este prototipo las citas se guardan solo en el dispositivo donde se agendan.</p>
+  </div></div>
+</section>
+
+<!-- CONTACTO -->
+<section class="page" id="pg-contacto" hidden>
+  <div class="banner"><h1>Contáctanos</h1><div class="crumb"><a href="#" data-go="inicio">Home</a> &nbsp;›&nbsp; Contáctanos</div></div>
+  <div class="sec"><div class="wrap"><div class="two">
+    <div class="card">
+      <h3>Datos del centro (ejemplo)</h3>
+      <div class="rows">
+        <div><span>Teléfono</span><span>01 000 0000</span></div>
+        <div><span>Horario</span><span>Lun a sáb, 7:30 a 13:00</span></div>
+        <div><span>Dirección</span><span>Av. Ejemplo 123, Lima</span></div>
+      </div>
+      <p style="margin-top:14px">Para dudas rápidas, el asistente responde a cualquier hora.</p>
+      <button class="btn out" type="button" data-chat="open">Hablar con el asistente</button>
+    </div>
+    <form class="card" id="ctcForm" novalidate>
+      <h3>Escríbenos</h3>
+      <label class="field"><span>Tu nombre</span><input type="text" id="cNombre" autocomplete="name"></label>
+      <label class="field"><span>Celular o correo</span><input type="text" id="cVia"></label>
+      <label class="field"><span>Mensaje</span><textarea id="cMsg"></textarea></label>
+      <button class="btn" type="submit">Enviar mensaje</button>
+      <p class="note" id="cNote" style="margin-top:10px"></p>
+    </form>
+  </div></div></div>
+</section>
+
+<!-- PROYECTO -->
+<section class="page" id="pg-proyecto" hidden>
+  <div class="banner"><h1>Sobre el proyecto</h1><div class="crumb"><a href="#" data-go="inicio">Home</a> &nbsp;›&nbsp; Proyecto del Grupo 3</div></div>
+  <div class="sec"><div class="wrap">
+    <div class="ptabs" role="tablist" aria-label="Secciones del proyecto">
+      <button class="ptab" role="tab" data-pt="problema" aria-selected="true">Problema</button>
+      <button class="ptab" role="tab" data-pt="solucion" aria-selected="false">Solución</button>
+      <button class="ptab" role="tab" data-pt="bocetos" aria-selected="false">Bocetos A y B</button>
+      <button class="ptab" role="tab" data-pt="pruebas" aria-selected="false">Pruebas</button>
+      <button class="ptab" role="tab" data-pt="informe" aria-selected="false">Informe</button>
+    </div>
+
+    <div class="pp" id="pt-problema">
+      <h2>El problema</h2>
+      <div class="card"><h3>Pregunta del proyecto</h3><p>¿Cómo podríamos reducir las aglomeraciones y los tiempos de espera en los centros de salud del Perú?</p></div>
+      <div class="card"><h3>Qué pasa hoy</h3>
+        <p>Para sacar una cita o hacer una pregunta simple, como qué documentos llevar o a qué hora atiende una ventanilla, el paciente tiene que ir hasta el centro de salud. Ahí se encuentra con colas desde la madrugada, salas llenas y carteles desactualizados.</p>
+        <p>Para quien vive del jornal, una sola visita puede costar un día de trabajo.</p></div>
+      <div class="card"><h3>Quién lo vive</h3><p>Pacientes y familiares que no pueden faltar a su trabajo. También el personal de ventanilla, que atiende a gente que solo venía a preguntar o a pedir una cita.</p></div>
+      <div class="card"><h3>Lo que más les duele</h3>
+        <ul>
+          <li>Perder una jornada completa por una consulta.</li>
+          <li>Gastar entre 1 y 2 horas de viaje solo para preguntar.</li>
+          <li>Llamar y encontrar la línea saturada.</li>
+          <li>Leer información vieja en carteles y páginas web.</li>
+          <li>Llegar con un papel incompleto y perder el cupo.</li>
+          <li>Esperar de pie, sin saber cuánto falta.</li>
+        </ul></div>
+      <div class="card"><h3>Lo que dicen los pacientes</h3>
+        <p class="quote">“¿Cuánto tiempo tendremos que esperar?”</p>
+        <p class="quote">“Hay demasiada gente esperando para ser atendida.”</p>
+        <p class="quote">“No sé a qué hora me atenderán.”</p>
+        <p class="quote">“Deberían organizar mejor las citas y los turnos.”</p>
+        <p class="note">Fuente: mapa de empatía del Grupo 3.</p></div>
+    </div>
+
+    <div class="pp" id="pt-solucion" hidden>
+      <h2>La solución</h2>
+      <div class="card"><p>AltoqueSalud es una página web donde el paciente pide su cita por internet, la consulta con su DNI y resuelve sus dudas con un asistente que responde a cualquier hora. La prioridad es que sea fácil: pocos pasos, botones grandes y nada de crear cuenta.</p></div>
+      <div class="card"><h3>Cómo se usa</h3>
+        <ol class="steps">
+          <li>Entra a la página desde el celular y toca “Agenda una cita”.</li>
+          <li>Elige especialidad, día y hora. Solo aparecen los horarios libres.</li>
+          <li>Confirma con su nombre, DNI y celular. La cita queda en el registro.</li>
+          <li>Si tiene dudas sobre requisitos u horarios, le pregunta al asistente.</li>
+        </ol></div>
+      <div class="card"><h3>Qué dolor resuelve cada parte</h3>
+        <div class="map">
+          <div><span class="pain">Ir al centro solo para pedir una cita</span><span class="fix">Cita por internet con registro</span></div>
+          <div><span class="pain">Horario limitado y viajes presenciales</span><span class="fix">Asistente a cualquier hora</span></div>
+          <div><span class="pain">Dudas sobre requisitos y horarios</span><span class="fix">Listas y respuestas al día</span></div>
+          <div><span class="pain">Líneas telefónicas saturadas</span><span class="fix">Atención a cientos de personas a la vez</span></div>
+        </div></div>
+      <div class="card"><h3>Técnicas que usamos</h3>
+        <p><b>Punto de vista (POV).</b> Un paciente que vive del jornal necesita resolver su cita y sus dudas sin perder un día de trabajo, porque hoy cada trámite lo obliga a ir y hacer cola.</p>
+        <p><b>SCAMPER.</b></p>
+        <ul>
+          <li>Sustituir la cola presencial por una cita por internet.</li>
+          <li>Combinar citas, requisitos y horarios en un solo lugar.</li>
+          <li>Adaptar lo que ya hacen los bancos y las tiendas por WhatsApp.</li>
+          <li>Modificar el cartel fijo por información que se actualiza.</li>
+          <li>Eliminar el viaje que solo era para preguntar.</li>
+          <li>Reordenar el proceso: primero se resuelve en casa y después se va al centro.</li>
+        </ul></div>
+      <div class="card"><h3>Por qué se puede hacer</h3><p>Es una página web común y un asistente conectado a la información del centro. Lo más importante es que alguien mantenga al día los horarios, los requisitos y la agenda.</p></div>
+      <div class="card"><h3>Resultado esperado</h3><p>Menos colas y menos aglomeración, una atención más rápida y ordenada, y una mejor experiencia para el paciente.</p></div>
+    </div>
+
+    <div class="pp" id="pt-bocetos" hidden>
+      <h2>Bocetos A y B</h2>
+      <p class="lede">Dos formas de resolver lo mismo. Las dos ya funcionan en esta página.</p>
+      <div class="two">
+        <div class="card">
+          <h3>Prototipo A: asistente de chat</h3>
+          <div class="sk" role="img" aria-label="Boceto del prototipo A: ventana de chat">
+            <div class="hd"></div>
+            <div class="bub">Hola, ¿en qué te ayudo?</div>
+            <div class="bub r">¿Qué llevo para el carnet?</div>
+            <div class="bub">DNI, copia de DNI y recibo.</div>
+            <div class="inp">Escribe tu duda...</div>
+          </div>
+          <div class="facts">
+            <span><b>Para quién:</b> quien prefiere preguntar con sus palabras.</span>
+            <span><b>Ventaja:</b> resuelve dudas que no están en ningún formulario.</span>
+            <span><b>Riesgo:</b> exige escribir, y a algunas personas les cuesta.</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Prototipo B: agenda web en 3 pasos</h3>
+          <div class="sk" role="img" aria-label="Boceto del prototipo B: formulario de cita en pasos">
+            <div class="hd"></div>
+            <div class="tiles"><div class="tile">Pediatría</div><div class="tile">Dermatología</div><div class="tile">Odontología</div><div class="tile">Nutrición</div></div>
+            <div class="tiles"><div class="tile" style="height:36px">Mar 14</div><div class="tile" style="height:36px">9:30 a. m.</div></div>
+            <div class="btnsk">Confirmar mi cita</div>
+          </div>
+          <div class="facts">
+            <span><b>Para quién:</b> quien solo quiere su cita, sin conversar.</span>
+            <span><b>Ventaja:</b> pocos toques y casi no hay forma de perderse.</span>
+            <span><b>Riesgo:</b> si tiene una duda, no hay a quién preguntarle.</span>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px"><h3>Qué vamos a comparar en las pruebas</h3><p>Cuál se entiende más rápido, cuál da menos confusión y cuál usaría la gente en lugar de ir a pedir su cita al centro.</p></div>
+    </div>
+
+    <div class="pp" id="pt-pruebas" hidden>
+      <h2>Pruebas con otros grupos</h2>
+      <p class="lede">Presenta el proyecto a 2 grupos distintos, toma fotos como evidencia y anota lo que te digan. Todo se guarda en este dispositivo.</p>
+      <div id="groups"></div>
+      <p class="note" id="saveNote"></p>
+    </div>
+
+    <div class="pp" id="pt-informe" hidden>
+      <h2>Informe de retroalimentación</h2>
+      <p class="lede">Unas 300 palabras con fortalezas, debilidades, mejoras, lo que aprendieron del fracaso y una conclusión general.</p>
+      <div class="card">
+        <p class="count" id="informeEstado"></p>
+        <div class="actions" style="margin-top:0">
+          <button class="btn sm" type="button" id="armar">Armar informe</button>
+          <button class="btn out sm" type="button" id="copiar">Copiar</button>
+          <button class="btn out sm" type="button" id="bajar" hidden>Descargar .txt</button>
+        </div>
+        <p class="count" id="palabras">0 palabras (meta: 300)</p>
+        <div class="field"><textarea id="informe" aria-label="Informe de retroalimentación" placeholder="Aquí aparece tu informe. Puedes editarlo."></textarea></div>
+        <p class="note" id="informeNota">El informe se arma con lo que escribiste en Pruebas, así que primero completa esa parte. Revísalo y ponlo en tus palabras antes de entregarlo.</p>
+      </div>
+      <div class="card"><h3>Equipo y roles</h3><p class="note">El docente evalúa la colaboración. Anota quién hizo cada parte.</p><div class="team" id="team"></div></div>
+    </div>
+  </div></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b style="color:#fff;font-size:18px">AltoqueSalud</b><br>Citas médicas por internet, sin hacer cola.</div>
+    <div>Prototipo universitario del Grupo 3.<br>Los horarios, costos y datos del centro son de ejemplo.</div>
+    <div><a href="#" data-go="cita">Agenda tu cita</a> · <a href="#" data-go="mis-citas">Mis citas</a> · <a href="#" data-go="proyecto">Proyecto</a></div>
+  </div>
+</footer>
+
+<!-- Asistente -->
+<div class="fab" id="fab">
+  <span class="fab-label" id="fabLabel">¡Escríbeme para poder ayudarte!</span>
+  <button type="button" id="fabBtn" aria-label="Abrir el asistente de AltoqueSalud" aria-expanded="false" aria-controls="chat"><img class="logo-img" data-v="icon" alt=""></button>
+</div>
+<section class="chat" id="chat" hidden aria-label="Asistente de AltoqueSalud">
+  <div class="chat-top">
+    <img class="logo-img" data-v="icon" alt="">
+    <div><b>Asistente AltoqueSalud</b><small>En línea, responde a cualquier hora</small></div>
+    <button type="button" id="chatClose" aria-label="Cerrar el asistente">×</button>
+  </div>
+  <div class="clog" id="clog" role="log" aria-live="polite"></div>
+  <form class="cform" id="cform" autocomplete="off">
+    <input id="cinput" type="text" placeholder="Escribe tu duda con tus palabras..." aria-label="Escribe tu duda">
+    <button type="submit">Enviar</button>
+  </form>
+</section>
+
+<script>
+(function () {
+  var LOGO_ICON = "data:image/webp;base64,UklGRuYYAABXRUJQVlA4INoYAACwXgCdASoAAQABPjEYikMiIaEUCqUAIAMEpu4XEw9Rc9b1lbsv5M/1P3d6v/NP5v/a/7j/Z/2t+SnWF0v/rvPg8m/Mv9L/jvyP+dX9+/4/sb8wD+JfyL/h/2r8fO455gv2N/bP3bf9l+2ful/tH+69gL+h/5P///+XtJ/QH/dD0z/2+//HyxfuN+3XwM/sh//NX885/4zta/u/9a/Z/oefZnm6vRfYn8l/a/3C/tP7M/ev+O72fix/ieoF+JfzX/Ffkp/ZP3B4/HZ/MC7i/7X7h/idmcZAH6yf8fjaKAn59/6v9z92r+c/8/+H/zfpl+i//H/lfgM/m/9n/6P979qf//+4P91PZu/dIuA5lZTkh9il8YyTLfx+ZWU5IfYpd48CmXGMky38fDXkF/YuKXZhvNujAIjaPdDyTLfx7LniuvZ54ZX7zO3fG39p88mYfZBk7ToQhnwC/E+xF/d9vXjE+D1fpbqYl+9AogaD7uSrcZltTKynJCaY87KqYmtE6bolj2qYD9d+BxO1Au9U/EA0InmK24EWReA/Iy8gbiMQgWHsvsRKKVfhGhhCBCMX6Kiyk2JvwHemM2Eru1T01Z9WrIj5SjsCBF4aklFHic3dheGfkqacPg54rBmiKoF8sL6SOoyN0MLLKuHXvc+BIjWHw9kmBl1scqSoKqIGvemgJYncWk5Mx+oYjHcdCUXGdmyOAel/9ZTZbgKQ1rTQo4Cs9VrqQ07c4pKQcz2liV1pS1EUn2ub763wicTvTk2PrpFhFHV04yWWgNScraPx1qaXlIckAbcqR2fT9IF+LhUsrU3Xy4j+0Fo1vIKcIpfej4ww6JCGvYZ0gxsmmVwBBf1qQhfM8HRN+99YLcFPY1koaNe1MiPSdzllivj3D1KBZAaZ8Lz1qQX02IzuwUjwMII/UuiOWNXLifCNbJpcb6SOJGCb+w7AzZcvDiPzvXjL61dw5C7QeDmQ1yQRKNkqOMH8hOWaJL5fAHyly8QLpD7FL4xkmW/j8yspyQ+xS6gAAP7/vdwAAAAdYMLsga7x0XPQ1dSg7jAtGZFvaRb/UsH8kI9sGUzsw6ydB8hi+Vx+SmMAE/z51WLHf8XWbCw6f6qh0nfxzJM1gaTYTWpiIuJ+8SpCLYwOA46+whFiMCpbOfXImjs59FW0gzwkrK4MpQao7/Qm/C4sliOfHCAc+uCZsJIZNfhDtmEeikOTzcRZ037AFgfLbRWVN7w79NBfKPmJamlM0QQ1JLLgOce9fYK1o+JLXOiqkM643kHhrtZFDSzx1qnn1+FCQRxMRQOnZXDJES7aE+J/3jtjMokfeRvLgJVDY0G5kUh3JUVwfP81azHxO0kLogKtJlGoPxjSy3fJqlxltJ+SsROAljkSMzkKkKzjVfN6WKMy4EbAk0bENO/l5cMbRqp/BheCNQRT0VuGgLSYJYzjjZ/Lhyd/TgAqUfJEac607vjanj113envYglgEwGZFy7E2cq/RyqSn2EO6Aq1TsIi9OEwPhkxoZR/qtDkjL+3kX0T5L5S/t26ty1OLj+EOBF1351FWp2rSH/dGjFs/bcnxhSidI6zAc73iWSJF5CB/oXCpQONmEcGKe59gee/+5x2p0o5I587fqwH5UIf0xSH8sacZQ4DWSVYH1VWGddnxrbQt94xvXfxqLkofcUgilUI+EvwoRLO5zmKEFsvb+3qKltMLMnyM2IKa7A6CmwmEvwPCsz48HJFIcci+ZbPR8Mjid03Vvox6v41aUOrq5Tm8pSFMF0tj5YO8k+Z3Hr1Xj8mR0rEaXOcZKpGwfcxKxbPVlCOUwmUQwxa/vbFDZjUmEyJGrYRiPZIhgRYVO3Na7R6H3X5BgAnXxMkpe+qM5yln+NUfupVzedyfcjb3+iGkJDBcg66rbFEMqUHWn2Ov7pb+dMmHV9TZSpwjCu5lOMI+SCmYGgyJqP5EFhiMZ+aWjvKBG3//BYyTtEfzGE9J6G3e6JyhJxXfurN537ageyi6hXNcoFwM0wSeSLYZcJ8vBKPlviRMDJO171kduwIPzqvEFk4IJvPiLGKAoqMEGsMTcmJgNTD0Bc0yvSufWDH/Wd/VXFQafI/n+9WcyVxXKOi5UjkltzP/ZFpE5A3ffddwA29JYGjlY280SoSFM451dQM9s/KWVr/4PlNz3AC/cYRlet+On3U0ubX4XZsvPChHLiIUwnDiy7iHLapU61eRvrdNcMkvIJlqd6M1GJ2+JDIUu6KWWYYOlQbGzD6lglsVs+ydsE8RY0EvPoaNeCoHR5f2PnSABQf+ow4trXnXs4uQWd2tlyCAiC/psGsY0IAFaGgms35SIlYERcP73iZH+ui+0V8L5XA6ZWgPqM1IeYxElMlHLhbpXKFVSxzU/FiKvpwDSZxirKAqvuHv32PzjVR/3K4sO5TgGfp/Q4ElpiOlaH0fkiud6BoR6dKoiDxIMPHjAuPyaKyzAGBG5dTkz8y9EngC3u6E0S58vi/oi4QGTuXtpd+BoMGbppc7c4TUqyqbmBG6iv33z878bVv/+R/ca6tID6Gne+n/a+S9fOC+nY4JuU7EtXGFQ+P/4O4a3D8CQSezas7dkVGywDzel6BNp5M3/0Rodd4NfUv4btXH81ZrLu7YFD4iml8nx0eQ1/vQvgJH38M0HQUiAo7thRUJ5rSCNmc/+5MfOvG47qunmkKARY87ASjsoviyYuPFxSU+8DJM+gueFUXSGngMzwhAKHHD120kP1jK9Y/VsasFFlGro8ShNW9JLkvLKWnTbEzh+bHnQmPI3w0pUK+UBMAhwSjaAuaNBRTv44vY1rJWMea7fSSSjoNI7SVlB7nFCwItu/Qr0n8AkmwDE7KtGA80DWZXeeY2Fw2BKqa8yJLXr8gSkJ4jNEy48srgj7tCFyWdjy8Jm+IR8L9hnjqYTh74C9dXaO03b2yF3ADY4MPXEGiS8u/Rrbxf4XWYKTW6x1qkTK2FzGrU1cVXRIQ+aR8/TZWsm0KSLMElj1jiCtXXvGFVWNaie5ZOASX5n/PYI3lslOZcL8akPPZPE5dJqudBFf2W0A/BLx3X3RdlHLPsgVpi3Fm/CuHKENy42SH3U2htMG7FCAgpKZRRzoZwTomsbESgHG42HDVdEGOS3IBQFtpmLohe+WuQ0eivvhnKfUcel1tAviTTWx7SZmkBv+CLtiQNcqtRUpU04HLFWobkXO4SKu9zX0tHhkw80JvY8SroeA1Azp0wvI70yBtrMrvxA2AgFeMFC/DXGPY7LdOw/Y+qUW9oFbQNeNuzlFlLH5J29S5zCmTUSg1S9SScZw2skSJhtWpTfJsVdcGRdh1V93OBjsvZsdh5kITp494agNoNb2WfJtY6ixetMHK7H6IhlzdlSOg0plRZpgms3HEM5En79xeXkwC1GxTmcX5wRT65OHQ7k6YT4H0K3ogCr7mDni9Cg/SR2n18KvQxarXoJXV6ZJlgDgJRcEtO9uVt8tBg0ijrXyExYEULEbtD1JusdqZgUAVQU4wkKpG6dv3I5tKCm7jBU/ptzLAjHkSRkfW/NM3VqI9yA2AJ5w7OnVFrbe1Wm4E4IleG0xXnO1m5wFLXMht9JhMad+SF/+/9pIA8vN9pqryvqtH/Z26BeDvv8+hfgyetJhj1yTuKkJva6f/dyxXk7AfIHdKTlFjtiv0Qp1SqlTZkTvMFzyvUnynnz9apDsWGWWfJwM/M9X8XMOta1vBCvytStgkc0uAsLWcnd4R0OfSjE9Z7Xm1z9KjytnSGfP8Z5FG8zeOwS8cLzBYK9KZ5ICdBzWjucOJtbpiHWvzhagp+dnpqBTo8rGx9t9rKVWT+UlbtKADJ0KYhTNnHIxizwweb1ecSkNnbEo+p40MF9tQtV78unhXeuaUDzRc+wvH/1Jav2VVlNpXGKnqFBoxcYuR127Vt8Q/rJRAM4PH9olDEBKitraemieLITVYqx/nta2cDpjyWK12a8z3UxgF+l81VFUlimaXA6HlJt7BP1kpz305T5t43968Mjri+piwDWzzh+WE2HI3ZRV25R/MBS2hfCBjV/Y5X0OdzF3U2QdCuTeEl0htgduKDbvugGgJO6UQwKWmqXT22S4zdA32y0oe9h36/P+xjCqccQ9AeqasxsKyk9PkH786j9YvjrwUWkLTP21dC3MA5HEvAjikqJxaAfXQDsXHxZnJOkhHJYwaCE8ngR8coF33sDWvuxq0patdEdSMELgNTvPXDXFoVfpKpEg8p2CSjS0nX2345lB9WNVTu5j9WcRFynsr1sdYtfIRTNiVHBxwMAV62edfFoJvrrubE1lSoreHPOM8b/AnNpgoPyqmLLLXA2zCqOuJX+8Vvsq4Zl2z0DpguaE+oxrnJR2VmSIlGuIjGseGVt4QhZ2ZcL2fwxubTHyXytm48/G6i9/lBscgTlth2Ik4+jz3UcCHQ3K+uFqECH+SpztA9/5zYo76RwkXU3XXxJTET2NGInoeYuDSjAaBYndVOwj+6Tt0QCIsi6YLx8ZgasI9rXVG4lSDgdWRhOqa/Jd2TD3X/GlYxGUbzJ+1k1iWn8Yh6UTrOR1T966g4D7l23wyEalOekuIt8v1+RupixkIAbMuz8Vf/mVQ3tIjDL8IJ4jtR4/yVOW00mj0M8wb7O+nfnXlHdj6fBl9SpXe7Po8pFY7YvVVUpUmMg4t8P5NB30docSQqjQZw9YSHCx3ikiR9USVzfhpTya/zAZuSsZdbhAA4K8IX2xpvze84KlpMdEfDzPpKXzdz60wSeG18PREqbSOJN5NJrROjgAAFx6781J2A1T7rmecPjLLpFO3pVCO1L4ItpjnZ5FQhy62ZIcpzn6w1jootaQXhfcAtcWFycRrlAO3273plmY+UfYOoxjm8IvHLOK05sgoAv+E4y3oXsB9AtX72vJijga3k60Y8PPohTD+30iNQJ/UD/wqHvgUjZLRfklb3GT1Oxc/7ElDnWnSHTQp3/BvFPAi/vvf9f7wEf71r8crL4BdEpYHBme4gZheOtEWLZ5rkRWl3c4n0ZHA2s4KiIg//Pn8jlcuD0V3LeDCyp8eeuk9xAkwXAfkBieRs71G/WBXe0csV14hNi/eE/cdG6QUyaaQWz1WHUuP5nPDX67kWf4Wq6pZyY6NovypqcFMp73jX1XU5pS0GmgrtxZX/As9MCdDZcxthOeg08O8snodaBmQ1IX3fw10nLm64z7sxx71mdjPi1S7gsQiW9u895RvKlsK+dV/9iSaI/K/vk937fOHFXPkTxPaXxAHD/SaHo9doGRoSfOa0oZeE/L2C8ojfs4c622/eLIQGVR1+TyCOmMVG25qzzEjyTFcOQs/KLlX/ZWSy3Qo8UdgJK6JGtKG3ZSgRiyqe0/t+/HmOh4I8ldJFPp3prUwokFDsNaJvEY3U6LdrLU3sLZKQRlUkzNcZKl66dmkCk0JVW/OvXkIMe0Lzb4Sa4H5L7cHbJ4M5Jn6tpqPsZtWK0Gj0ijey97gY44wrzYD9jya+e89ufhx/4RzG8KXcVeUDqbuibi7IknpVbnA10ujL7svWfjdlczAq7RgrFUkWbo0RsVRHODVM4Il6Rm6/84P8Xd+TIYzfVFsSIbBfJJP7BHCga//WkoAwGhhBHBf8UIBhz1baCSajsWzyBFC2ieKubdV/tUX3LTYnPPAD3vqMKAmNS6kj5xCXs0GIKwmNDH/gsFpKbEzSPY62zfnKXDwH7o9dHgrLuC6cyuXPDrpRsscpmhk+9GpADmCdH4wObHVNv9CWwN8R0LKhZixtEMMzko7mpeILTvQLOnFqIMFigLSmxnyTdd2vY/IkAG/APsxCJX2/QdbIziELXEScKnlUCyVt0EMLEbcn20pj220Vf+F97W8IPGfB4nI7eRi4lxrbDYsBt3Tc3xBmQ/eY0Qf8nuBaYCu3Fx2O/s8oJa/iFMh1dxPELoEf9dUeVqVvrGCYQn1ItJzgerKbev2hwjYLwr+iCwyykVRwqOPEe9wU59bgeGyDRW+4KtK/AcevWB6gs2jAoLOY+MBXPNll9qhbRgJSt/Bq7q/rtEYB/LUcRjcPopdZhLJ5szrZhk+0Da4qRCOOsG9WxPfG2TXAvPximipNf4grrElIQId/lNdOGxsZWObRwIMR0RHY+21297ZXh70a4AoV1PzHa98FVaRyVZo3sfQZML7YbNJ91wnPeEIvuJ2Hu26K+yNcjMh6cczsyLpOYwsAuturucjldTcf/kAsm0dkWXqYef4rHI0U3gIOXtioBXqY45Eo6gkL/0XP3OSwA3ldtosAsCJ1F02QLSI29vI0CyURS5QMkZUszdZQ9qeOuDg5aQHOeYH6wu8pXWxw+hopUUKQ1QF3iAdum0uTUglvlxXzfCaNuZ9y2X7Q9WUFRv8z8IJW3A6P0mqHjEw+J95B/YucgNhIkwdqjfkilEsAj1gXqwnwXd38v71w5llvjoLlwzLef2bvcolQxmkIta7hRRVxrRuPbu6b8o/edBdf6Kt3pw1sOgP3ufsa2ukC6pUQ9LBTRh7fxbnqSykaUjDu2YvDdwZ5CyrszaFtWsbxaDZnlPKxvHT+zRXf93sDTww1BvZ7IHf4LeopsWPZ860zkmL1UUDbPfP9BRfJRsiHDKzhi5ZQD3j4q6zvwPHG1+vDHWROwKsLqRsJGc122d1R46PhGMH3qV33jlDo9VJLY3mHByQ1CvKHZS5qoRRGykepjnazWGUbsKu8eFH/Wpss/TfAwtyRF0WniSq5yiRqbdDYpTxXCrf8TfMrkTuVp9eYwdEAtbEK+iigSszHsF/V/Ap5KOUS6Q77yLqb6sO2HK/eIfG7/9q49bcZJXFcD2GJ5KiH6bGSI38R01IzEaigbZ/UYJml+Wq4ZKQP0mbLgrvKcSRk8QCnW2rUK9y7geTUeKocJfX9vtLo+y20SwN5zpkxVv1N2kxV+hCFTKIni9cZs3oUg/o9OPw/jikHjIhqp6iTeSi5H/51xqNYyGVGV2Cyefm86cwGFgY1vRlTummOjoQCR+wDDS6z8VkK6aUlmidA2mRnUVx/wDmMc0esEEnpGCTv5jwky494pc71162lN9VNYcknuh82w8Tuvp+5TcGyEQjzWdGaXDGYBw3Qh2aOtg0OCppaT+f/sNNlYS27uv8XiDEDlr5MsZOxo0VYHk2UUEmzXHtU9DaFxGB++fULkCPbjv5b+Eqk2nH+Vev+bXUb0fFdnsVh+aD9cDzVGaULdV8ILcku9ZRbji+bn79M1Tcwp/d7IICO1Co4DumxRQ1gf+ykKi/qShkEJ/QGvqAzfDss4bzjqsXV3ycb1IrkccabYP8G/1TuY3HZTo3ofqMUElKKhbLBxLi8CWXYW/3zZY2IWikKbaEEmWq4KB5IgOFHv/dYQZ3C695ONjjPH2vB5pU6uqbCZKzi549up8WYmxgq/FmIxdAsLYRv45OasLJlK/8JJQsfcOE4cKPwKqC3NMN+4jp5iCNR3KHuhrPm5cqxBeHYGr/Wme3Y4flhFM4jq57f2deWomAszH4eRBhng+CRAJ9EpKotCvvn/uwuPmPrUFivfUHgzcY905QzBWTI+OHisuF4orWA2gShfP+7YqDUIwa7bbZF9hoWq9RwXSO3Z0OC/WNtR2nMHi79xpFoQsy+f/ckjdhfaVepuKltSQSJ3+YIhUgLLFpGpwv+fs4r5jJPTnAoQkr4sPnc2bmpGPTU9fqkMxlNeB3nGsFU8E+ehMXwMdDPpT4ICYiRdCZmdOcktYcMW4arPyV5lZ8lS8hVn8Ull6JMhwhqlsYVjJDAoXfKfLgND7APOg+adkPCnBLDiRXRLwnqzsDZUv0tOAOi6ak68xA92q9ykNH7A1A7XGibmedI+P718a42gn4YD412Tjcb8RDK4ZEGuXyxFvXSgAZb+PyU798u5sc0Xdkg/Ma9JZTxeBbTAM7tuC3WPpfaQ1uzNp7qe/ilfdu2/ixfc6px+9iXnV+XIJWVfb53fn3iofF+qeLM1iBBIDoAG+HRZnxcyEqV2CMLelpefrEhrIsuCp68fRqz0n4D0sw+DjZDy4qdMrTdTG4LxEkCv7nyiN0AQow29og8bbs+X/U7m+jJsk310eGLqKBWTYxpx4HTZC4+5uT6HX4wCPgkL9kHnjV1tT7kmLM0plWlgJ+CogzDfcTQ+1ygGr59DjKJLZBgjnbtiflUgRrZfb0GepgrQbxugnQTe57gyKC3coFxNKiIffwj6CshUI0ps3TwiyjxoncbjxXofKm2CYJwnUBEwwpUHV5nZvmRC/uWm9YqvbZ2oL42xmGisaBEXCrk7meor03w/CRCe843xaoDl1VflkSLn4RM5L4Ap3PkAHNQQdHtRbWoygZiLEZRiS/4ACm/x+wytniIGbRO9NggBOIfJoIBFNDLHpBQAA9uh18AABKZul7JHqqo5FjUqTmywrKLLj3J3sNdi7/4R08ocXDVF9C/TPER0gADM4V+VCAk+hfH+Kh7ECuZMTDVjF3IxolAAAAAAAAAA==", LOGO_FULL = "data:image/webp;base64,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";
+  Array.prototype.forEach.call(document.querySelectorAll('.logo-img'), function (i) { i.src = i.getAttribute('data-v') === 'full' ? LOGO_FULL : LOGO_ICON; });
+
+  /* ---------- Utilidades ---------- */
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function $(id) { return document.getElementById(id); }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function norm(s) { return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function isoOf(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function fechaBonita(iso) {
+    var p = iso.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]);
+    return cap(d.toLocaleDateString('es-PE', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, ''));
+  }
+  function lev(a, b) {
+    var m = [], i, j;
+    for (i = 0; i <= a.length; i++) m[i] = [i];
+    for (j = 0; j <= b.length; j++) m[0][j] = j;
+    for (i = 1; i <= a.length; i++) for (j = 1; j <= b.length; j++)
+      m[i][j] = Math.min(m[i - 1][j] + 1, m[i][j - 1] + 1, m[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return m[a.length][b.length];
+  }
+  function fz(q, words) {
+    var toks = q.split(/[^a-z0-9]+/).filter(function (t) { return t.length >= 3; });
+    return toks.some(function (t) {
+      return words.some(function (w) { if (t === w) return true; if (t.length < 4) return false; return lev(t, w) <= (w.length >= 7 ? 2 : 1); });
+    });
+  }
+
+  /* ---------- Datos guardados ---------- */
+  var KEY = 'altokesalud:v2';
+  function blank() { return { name: '', who: '', photos: [], ease: 0, clear: 0, use: 0, pref: '', like: '', confuse: '', improve: '', failed: '' }; }
+  var state = { citas: [], msgs: [], groups: [blank(), blank()], team: {}, informe: '' };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY));
+    if (saved) {
+      state.citas = saved.citas || []; state.msgs = saved.msgs || []; state.team = saved.team || {}; state.informe = saved.informe || '';
+      if (saved.groups && saved.groups.length === 2) state.groups = saved.groups;
+    }
+  } catch (e) {}
+  function persist() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); var n = $('saveNote'); if (n) n.textContent = ''; return true; }
+    catch (e) { var n2 = $('saveNote'); if (n2) n2.textContent = 'No pude guardar en este dispositivo. Toma capturas de lo que llenes.'; return false; }
+  }
+
+  /* ---------- Capacidades de la plataforma ---------- */
+  var sampleFn = null, dl = null;
+  try {
+    if (window.claude && window.claude.use) {
+      window.claude.use('sample').then(function (s) { sampleFn = s || null; }).catch(function () {});
+      window.claude.use('downloads').then(function (d) { dl = d || null; if (dl) { $('bajar').hidden = false; $('regCsv').hidden = false; } }).catch(function () {});
+    }
+  } catch (e) {}
+
+  /* ---------- Especialidades ---------- */
+  var ESP = [
+    { k: 'Medicina general', ic: '🩺', d: 'Control, chequeos y molestias del día a día.' },
+    { k: 'Pediatría', ic: '👶', d: 'Atención para bebés, niñas y niños.' },
+    { k: 'Obstetricia', ic: '🤰', d: 'Control del embarazo y salud de la mujer.' },
+    { k: 'Odontología', ic: '🦷', d: 'Limpieza, revisión y cuidado dental.' },
+    { k: 'Dermatología', ic: '🧴', d: 'Cuidado de la piel, el cabello y las uñas.' },
+    { k: 'Nutrición', ic: '🥗', d: 'Orientación para alimentarte mejor.' }
+  ];
+  function espCards(box, withDesc) {
+    ESP.forEach(function (e) {
+      var b = el('button', 'card esp'); b.type = 'button';
+      b.innerHTML = '<span class="ic" aria-hidden="true">' + e.ic + '</span><h3>' + esc(e.k) + '</h3>' + (withDesc ? '<p>' + esc(e.d) + '</p>' : '');
+      b.addEventListener('click', function () { startBooking(e.k); });
+      box.appendChild(b);
+    });
+  }
+  espCards($('espPreview'), false);
+  espCards($('espGrid'), true);
+
+  /* ---------- Navegación ---------- */
+  var PAGES = ['inicio', 'especialidades', 'cita', 'mis-citas', 'contacto', 'proyecto'];
+  var current = 'inicio';
+  function go(p) {
+    if (PAGES.indexOf(p) < 0) p = 'inicio';
+    current = p;
+    PAGES.forEach(function (x) { $('pg-' + x).hidden = (x !== p); });
+    Array.prototype.forEach.call(document.querySelectorAll('#nav a'), function (a) {
+      if (a.getAttribute('data-go') === p) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    $('nav').classList.remove('open'); $('burger').setAttribute('aria-expanded', 'false');
+    if (p === 'mis-citas') renderRegistro();
+    if (p === 'cita' && !booking.esp) startBooking('');
+    try { window.scrollTo(0, 0); } catch (e) {}
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('[data-go]');
+    if (a) { e.preventDefault(); if (a.getAttribute('data-go') === 'cita') resetBooking(); go(a.getAttribute('data-go')); return; }
+    var c = e.target.closest && e.target.closest('[data-chat="open"]');
+    if (c) { e.preventDefault(); openChat(); }
+  });
+  $('burger').addEventListener('click', function () {
+    var o = $('nav').classList.toggle('open'); $('burger').setAttribute('aria-expanded', String(o));
+  });
+
+  /* ================= AGENDA DE CITAS ================= */
+  var booking = { esp: '', fecha: '', hora: '', step: 1 };
+  var HORAS = ['7:30 a. m.', '8:30 a. m.', '9:30 a. m.', '10:30 a. m.', '11:30 a. m.', '12:30 p. m.'];
+
+  function dias() {
+    var out = [], d = new Date();
+    while (out.length < 6) { d.setDate(d.getDate() + 1); if (d.getDay() === 0) continue; out.push(isoOf(d)); }
+    return out;
+  }
+  function ocupado(esp, fecha, hora) {
+    return state.citas.some(function (c) { return c.estado === 'Confirmada' && c.esp === esp && c.fecha === fecha && c.hora === hora; });
+  }
+
+  function setStep(n) {
+    booking.step = n;
+    ['1', '2', '3'].forEach(function (s) {
+      document.querySelector('#pg-cita [data-p="' + s + '"]').hidden = (+s !== n);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#wsteps li'), function (li) {
+      var s = +li.getAttribute('data-s'); li.className = s === n ? 'on' : (s < n ? 'done' : '');
+    });
+    $('bkDone').hidden = true;
+  }
+  function renderEsp() {
+    var box = $('bkEsp'); box.innerHTML = '';
+    ESP.forEach(function (e) {
+      var b = el('button', 'card esp'); b.type = 'button'; b.setAttribute('aria-pressed', String(booking.esp === e.k));
+      b.innerHTML = '<span class="ic" aria-hidden="true">' + e.ic + '</span><h3>' + esc(e.k) + '</h3><p>' + esc(e.d) + '</p>';
+      b.addEventListener('click', function () { booking.esp = e.k; booking.fecha = ''; booking.hora = ''; renderDias(); renderHoras(); setStep(2); });
+      box.appendChild(b);
+    });
+  }
+  function renderDias() {
+    var box = $('bkDias'); box.innerHTML = '';
+    dias().forEach(function (iso) {
+      var b = el('button', 'pill', fechaBonita(iso)); b.type = 'button'; b.setAttribute('aria-pressed', String(booking.fecha === iso));
+      b.addEventListener('click', function () { booking.fecha = iso; booking.hora = ''; renderDias(); renderHoras(); });
+      box.appendChild(b);
+    });
+  }
+  function renderHoras() {
+    var box = $('bkHoras'); box.innerHTML = '';
+    if (!booking.fecha) { box.appendChild(el('p', 'note', 'Primero elige un día.')); return; }
+    HORAS.forEach(function (h) {
+      var b = el('button', 'pill', h); b.type = 'button';
+      var oc = ocupado(booking.esp, booking.fecha, h);
+      b.disabled = oc; b.setAttribute('aria-pressed', String(booking.hora === h));
+      if (oc) b.title = 'Ya está reservada';
+      b.addEventListener('click', function () { booking.hora = h; renderHoras(); resumen(); setStep(3); });
+      box.appendChild(b);
+    });
+  }
+  function resumen() { $('bkResumen').innerHTML = '<b>' + esc(booking.esp) + '</b>, ' + esc(fechaBonita(booking.fecha)) + ', ' + esc(booking.hora); }
+  function startBooking(esp) {
+    resetBooking(); booking.esp = esp;
+    if (esp) { renderDias(); renderHoras(); setStep(2); } else { renderEsp(); setStep(1); }
+    go('cita');
+  }
+  function resetBooking() {
+    booking = { esp: '', fecha: '', hora: '', step: 1 };
+    ['fNombre', 'fDni', 'fCel', 'fMotivo'].forEach(function (i) { $(i).value = ''; });
+    $('fOk').checked = false;
+    ['eNombre', 'eDni', 'eCel', 'eOk'].forEach(function (i) { $(i).textContent = ''; });
+    renderEsp(); renderDias(); renderHoras(); setStep(1);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-back]'), function (b) {
+    b.addEventListener('click', function () { setStep(+b.getAttribute('data-back')); });
+  });
+  ['fDni', 'fCel'].forEach(function (id) { $(id).addEventListener('input', function (e) { e.target.value = e.target.value.replace(/\D/g, ''); }); });
+  $('findDni').addEventListener('input', function (e) { e.target.value = e.target.value.replace(/\D/g, ''); });
+  $('misDni').addEventListener('input', function (e) { e.target.value = e.target.value.replace(/\D/g, ''); });
+
+  function newCode() {
+    var c; do { c = 'ALTOQUE-' + Math.floor(1000 + Math.random() * 9000); } while (state.citas.some(function (x) { return x.id === c; }));
+    return c;
+  }
+  var lastDni = '';
+  $('bkForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var nombre = $('fNombre').value.trim(), dni = $('fDni').value.trim(), cel = $('fCel').value.trim(), ok = true;
+    $('eNombre').textContent = ''; $('eDni').textContent = ''; $('eCel').textContent = ''; $('eOk').textContent = '';
+    if (nombre.split(/\s+/).filter(Boolean).length < 2) { $('eNombre').textContent = 'Escribe tu nombre y apellido.'; ok = false; }
+    if (!/^\d{8}$/.test(dni)) { $('eDni').textContent = 'El DNI tiene 8 números.'; ok = false; }
+    if (!/^9\d{8}$/.test(cel)) { $('eCel').textContent = 'El celular tiene 9 números y empieza con 9.'; ok = false; }
+    if (!$('fOk').checked) { $('eOk').textContent = 'Marca la casilla para continuar.'; ok = false; }
+    if (!ok) { var f = document.querySelector('#bkForm .err:not(:empty)'); if (f) f.scrollIntoView({ block: 'center' }); return; }
+    if (ocupado(booking.esp, booking.fecha, booking.hora)) { setStep(2); renderHoras(); return; }
+    var c = { id: newCode(), esp: booking.esp, fecha: booking.fecha, hora: booking.hora, nombre: nombre, dni: dni, cel: cel, motivo: $('fMotivo').value.trim(), estado: 'Confirmada', creada: new Date().toISOString() };
+    state.citas.push(c);
+    var saved = persist();
+    lastDni = dni;
+    ['1', '2', '3'].forEach(function (s) { document.querySelector('#pg-cita [data-p="' + s + '"]').hidden = true; });
+    Array.prototype.forEach.call(document.querySelectorAll('#wsteps li'), function (li) { li.className = 'done'; });
+    $('doneCode').textContent = c.id;
+    $('doneInfo').textContent = c.esp + ', ' + fechaBonita(c.fecha) + ', ' + c.hora + ', a nombre de ' + c.nombre;
+    $('doneNote').textContent = saved ? '' : 'No pude guardarla en este dispositivo. Toma una captura de este código.';
+    $('bkDone').hidden = false;
+    try { window.scrollTo(0, 0); } catch (er) {}
+  });
+  $('doneVer').addEventListener('click', function () { $('misDni').value = lastDni; go('mis-citas'); buscarMis(lastDni); });
+  $('doneOtra').addEventListener('click', function () { resetBooking(); });
+  $('doneCopy').addEventListener('click', function () {
+    var t = $('doneCode').textContent, ok = false;
+    try { var ta = el('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove(); } catch (e) {}
+    $('doneNote').textContent = ok ? 'Código copiado.' : 'No pude copiarlo. Anótalo: ' + t;
+  });
+
+  /* ---------- Mis citas y registro ---------- */
+  function citaCard(c) {
+    var d = el('div', 'card cita');
+    var estado = c.estado === 'Confirmada' ? '<span class="badge ok">Confirmada</span>' : '<span class="badge no">Cancelada</span>';
+    d.innerHTML = '<div><h3 style="margin-bottom:4px">' + esc(c.esp) + ' ' + estado + '</h3><p style="margin:0">' + esc(fechaBonita(c.fecha)) + ', ' + esc(c.hora) + '</p><p class="note" style="margin:0">Código ' + esc(c.id) + ' · ' + esc(c.nombre) + '</p></div>';
+    if (c.estado === 'Confirmada') {
+      var box = el('div', 'actions'); box.style.margin = '0';
+      var rep = el('button', 'btn out sm', 'Reprogramar'); rep.type = 'button';
+      var can = el('button', 'btn out sm', 'Cancelar'); can.type = 'button';
+      rep.addEventListener('click', function () { c.estado = 'Cancelada'; persist(); startBooking(c.esp); });
+      can.addEventListener('click', function () {
+        if (!can.getAttribute('data-sure')) { can.setAttribute('data-sure', '1'); can.textContent = '¿Seguro? Sí, cancelar'; return; }
+        c.estado = 'Cancelada'; persist(); buscarMis(c.dni); renderRegistro();
+      });
+      box.appendChild(rep); box.appendChild(can); d.appendChild(box);
+    }
+    return d;
+  }
+  function buscarMis(dni) {
+    $('misErr').textContent = '';
+    var box = $('misLista'); box.innerHTML = '';
+    if (!/^\d{8}$/.test(dni)) { $('misErr').textContent = 'El DNI tiene 8 números.'; return; }
+    var list = state.citas.filter(function (c) { return c.dni === dni; }).sort(function (a, b) { return (a.fecha + a.hora) < (b.fecha + b.hora) ? -1 : 1; });
+    if (!list.length) {
+      box.innerHTML = '<div class="card"><p>No encontramos citas con ese DNI en este dispositivo.</p></div>';
+      var b = el('button', 'btn', 'Agendar una cita'); b.type = 'button'; b.addEventListener('click', function () { startBooking(''); });
+      box.firstChild.appendChild(b); return;
+    }
+    list.forEach(function (c) { box.appendChild(citaCard(c)); });
+  }
+  $('misForm').addEventListener('submit', function (e) { e.preventDefault(); buscarMis($('misDni').value.trim()); });
+  $('findForm').addEventListener('submit', function (e) {
+    e.preventDefault(); var v = $('findDni').value.trim(); $('misDni').value = v; go('mis-citas'); buscarMis(v);
+  });
+
+  function renderRegistro() {
+    var tb = $('regBody'); tb.innerHTML = '';
+    if (!state.citas.length) { tb.innerHTML = '<tr><td colspan="7">Todavía no hay citas registradas.</td></tr>'; return; }
+    state.citas.slice().reverse().forEach(function (c) {
+      var tr = el('tr');
+      tr.innerHTML = '<td>' + esc(c.id) + '</td><td>' + esc(c.nombre) + '</td><td>' + esc(c.dni.slice(0, 2) + '****' + c.dni.slice(-2)) + '</td><td>' + esc(c.esp) + '</td><td>' + esc(fechaBonita(c.fecha)) + '</td><td>' + esc(c.hora) + '</td><td>' + esc(c.estado) + '</td>';
+      tb.appendChild(tr);
+    });
+  }
+  $('regCsv').addEventListener('click', async function () {
+    if (!dl || !state.citas.length) return;
+    function q(v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }
+    var rows = [['Codigo', 'Paciente', 'DNI', 'Celular', 'Especialidad', 'Fecha', 'Hora', 'Estado', 'Motivo']].concat(state.citas.map(function (c) { return [c.id, c.nombre, c.dni, c.cel, c.esp, c.fecha, c.hora, c.estado, c.motivo]; }));
+    try { await dl.save({ filename: 'registro-citas-AltoqueSalud.csv', data: rows.map(function (r) { return r.map(q).join(','); }).join('\n') }); } catch (e) {}
+  });
+
+  /* ---------- Contacto ---------- */
+  $('ctcForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var n = $('cNombre').value.trim(), v = $('cVia').value.trim(), m = $('cMsg').value.trim();
+    if (!n || !v || !m) { $('cNote').textContent = 'Completa tu nombre, un medio de contacto y el mensaje.'; return; }
+    state.msgs.push({ n: n, v: v, m: m, f: new Date().toISOString() }); persist();
+    $('cNombre').value = ''; $('cVia').value = ''; $('cMsg').value = '';
+    $('cNote').textContent = 'Mensaje enviado. En este prototipo queda guardado solo en este dispositivo.';
+  });
+
+  /* ================= ASISTENTE ================= */
+  var log = $('clog'), cform = $('cform'), cinput = $('cinput');
+  var busy = false, awaitingComment = false, hist = [], started = false;
+
+  var TRAMITES = {
+    carnet: { nombre: 'Carnet de atención', docs: ['DNI original', 'Copia de tu DNI', 'Recibo de agua o luz (ejemplo)'], costo: 'S/ 0.00 (ejemplo)' },
+    historia: { nombre: 'Copia de historia clínica', docs: ['DNI original', 'Solicitud escrita en ventanilla', 'Comprobante de pago en caja (ejemplo)'], costo: 'S/ 5.00 (ejemplo)' },
+    certificado: { nombre: 'Certificado médico', docs: ['DNI original', 'Una foto tamaño carnet (ejemplo)', 'Comprobante de pago en caja (ejemplo)'], costo: 'S/ 20.00 (ejemplo)' },
+    otro: { nombre: 'Otro trámite' }
+  };
+
+  var RULES =
+    'Eres el asistente virtual de AltoqueSalud, una página web de un centro de salud del Perú (prototipo universitario). ' +
+    'Ayudas con consultas administrativas: requisitos de trámites, horarios y cómo sacar o consultar una cita. ' +
+    'Las citas se piden en la sección "Agenda tu cita" de la misma página, en 3 pasos (especialidad, día y hora, datos) y sin crear cuenta. Se consultan o cancelan en "Mis citas" con el DNI. Tú no puedes reservar por el paciente, pero sí guiarlo hacia ahí. ' +
+    'Especialidades de ejemplo: medicina general, pediatría, obstetricia, odontología, dermatología y nutrición. ' +
+    'Datos de ejemplo: ventanilla de lunes a viernes de 8:00 a 13:00; consulta externa de lunes a sábado de 7:30 a 13:00; farmacia de lunes a sábado de 8:00 a 19:00; suele haber menos gente entre 10:00 y 12:00. ' +
+    'Requisitos de ejemplo: carnet de atención = DNI original, copia de DNI y recibo de agua o luz, costo S/ 0; copia de historia clínica = DNI original, solicitud escrita en ventanilla y pago en caja de S/ 5; certificado médico = DNI original, una foto tamaño carnet y pago en caja de S/ 20. ' +
+    'Cuando des horarios, costos o documentos, aclara que son datos de ejemplo. ' +
+    'Entiende las faltas de ortografía y las frases incompletas. Responde en español claro y cercano, en un máximo de 3 oraciones cortas, sin listas largas, sin saludos repetidos y sin frases de relleno. ' +
+    'No diagnostiques ni recetes. Si alguien describe síntomas graves o una emergencia, dile que vaya de inmediato al establecimiento de salud más cercano o llame al 106 (SAMU). ' +
+    'Si no sabes algo, dilo y sugiere hablar con recepción. Si la pregunta no tiene que ver con el centro de salud, redirígela con amabilidad a lo que sí puedes resolver.';
+
+  function scrollDown() { log.scrollTop = log.scrollHeight; }
+  function clearChips() { Array.prototype.forEach.call(log.querySelectorAll('.chips'), function (c) { c.remove(); }); }
+  function user(text) { var m = el('div', 'msg me'); m.textContent = text; log.appendChild(m); scrollDown(); }
+
+  async function bot(content, wait) {
+    var t = el('div', 'typing', '<i></i><i></i><i></i>');
+    log.appendChild(t); scrollDown();
+    await sleep(reduce ? 0 : (wait || 500));
+    t.remove();
+    var m = el('div', 'msg bot');
+    if (typeof content === 'string') m.innerHTML = content; else m.appendChild(content);
+    log.appendChild(m); scrollDown();
+    return m;
+  }
+  function chips(options) {
+    var wrap = el('div', 'chips');
+    options.forEach(function (o) {
+      var b = el('button', 'chip'); b.type = 'button'; b.textContent = o.label;
+      b.addEventListener('click', async function () {
+        if (busy) return;
+        busy = true; wrap.remove(); user(o.label);
+        try { await o.run(); } finally { busy = false; scrollDown(); }
+      });
+      wrap.appendChild(b);
+    });
+    log.appendChild(wrap); scrollDown();
+  }
+
+  function openChat() {
+    $('chat').hidden = false; $('fabBtn').setAttribute('aria-expanded', 'true'); $('fabLabel').hidden = true;
+    if (!started) { started = true; start(); }
+    setTimeout(function () { cinput.focus(); }, 50);
+  }
+  function closeChat() { $('chat').hidden = true; $('fabBtn').setAttribute('aria-expanded', 'false'); $('fabBtn').focus(); }
+  $('fabBtn').addEventListener('click', function () { if ($('chat').hidden) openChat(); else closeChat(); });
+  $('chatClose').addEventListener('click', closeChat);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('chat').hidden) closeChat(); });
+
+  async function irA(p, msg) {
+    await bot(msg);
+    $('chat').hidden = true; $('fabBtn').setAttribute('aria-expanded', 'false');
+    if (p === 'cita') { resetBooking(); }
+    go(p);
+  }
+
+  async function menu(intro) {
+    await bot(intro || '¿Qué necesitas resolver?');
+    chips([
+      { label: 'Agendar una cita', run: function () { return irA('cita', 'Te llevo al formulario. Son 3 pasos y no necesitas crear cuenta.'); } },
+      { label: 'Ver o cancelar mi cita', run: function () { return irA('mis-citas', 'Ahí pones tu DNI y ves tus citas.'); } },
+      { label: 'Requisitos de un trámite', run: flowRequisitos },
+      { label: 'Horarios de atención', run: flowHorarios },
+      { label: 'Hablar con una persona', run: flowPersona }
+    ]);
+  }
+  async function flowRequisitos() {
+    await bot('¿Cuál de estos trámites quieres hacer?');
+    chips(Object.keys(TRAMITES).map(function (k) { return { label: TRAMITES[k].nombre, run: function () { return tramite(k); } }; }));
+  }
+  async function tramite(k) {
+    var t = TRAMITES[k];
+    if (!t.docs) {
+      await bot('Ese trámite cambia según el caso. Cuéntame cuál es con tus palabras o te paso con una persona.');
+      chips([{ label: 'Hablar con una persona', run: flowPersona }, { label: 'Volver al inicio', run: function () { return menu('Dime qué necesitas.'); } }]);
+      return;
+    }
+    var card = el('div', 'mini');
+    card.appendChild(el('strong', null, 'Para ' + esc(t.nombre.toLowerCase()) + ' lleva:'));
+    var ul = el('ul', 'ckl');
+    t.docs.forEach(function (d) { var li = el('li'); li.innerHTML = '<label><input type="checkbox"><span>' + esc(d) + '</span></label>'; ul.appendChild(li); });
+    card.appendChild(ul);
+    card.appendChild(el('p', 'note', 'Costo en caja: ' + esc(t.costo) + '. Es una lista de ejemplo, confírmala con tu centro.'));
+    await bot(card, 600);
+    chips([
+      { label: 'Agendar una cita', run: function () { return irA('cita', 'Perfecto, vamos a agendar.'); } },
+      { label: 'Ver horarios', run: flowHorarios },
+      { label: 'Eso era todo', run: decision }
+    ]);
+  }
+  async function flowHorarios() {
+    var hoy = new Date().toLocaleDateString('es-PE', { day: 'numeric', month: 'long' });
+    var card = el('div', 'mini');
+    card.innerHTML = '<strong>Horarios (datos de ejemplo)</strong><div class="rows"><div><span>Ventanilla</span><span>Lun a vie, 8:00 a 13:00</span></div><div><span>Consulta externa</span><span>Lun a sáb, 7:30 a 13:00</span></div><div><span>Farmacia</span><span>Lun a sáb, 8:00 a 19:00</span></div></div><p class="note">Información revisada el ' + esc(hoy) + '.</p>';
+    await bot(card, 600);
+    await bot('Suele haber menos gente entre las 10:00 y las 12:00 (ejemplo). Te conviene ir a esa hora.', 400);
+    chips([
+      { label: 'Agendar una cita', run: function () { return irA('cita', 'Perfecto, vamos a agendar.'); } },
+      { label: 'Eso era todo', run: decision }
+    ]);
+  }
+  async function flowPersona() {
+    var card = el('div', 'mini');
+    card.innerHTML = '<strong>Recepción te atiende por teléfono</strong><div class="rows"><div><span>Teléfono</span><span>01 000 0000 (ejemplo)</span></div><div><span>Horario</span><span>Lun a vie, 8:00 a 13:00 (ejemplo)</span></div></div>';
+    await bot('Claro, también puedes hablar con alguien del centro.');
+    await bot(card, 400);
+    chips([{ label: 'Volver al inicio', run: function () { return menu('Dime qué necesitas.'); } }]);
+  }
+  async function decision() {
+    await bot('¿Con esto resolviste tu duda?');
+    chips([
+      { label: 'Sí, ya no necesito ir', run: async function () { await bot('Qué bueno. Te ahorraste la cola y el viaje.'); await rating(); } },
+      { label: 'Voy a ir, ya sé qué llevar', run: async function () { await bot('Perfecto. Vas con todo claro y a la hora que conviene.'); await rating(); } },
+      { label: 'Aún tengo dudas', run: function () { return menu('Dime qué te falta o elige una opción.'); } }
+    ]);
+  }
+  async function rating() {
+    await bot('Una última cosa. ¿Qué tan fácil te resultó usarme?');
+    chips([1, 2, 3, 4, 5].map(function (n) {
+      return { label: n + ' ★', run: async function () {
+        if (n <= 3) { awaitingComment = true; await bot('Gracias. Escribe abajo qué te costó y lo anotamos para mejorar.'); }
+        else { await bot('Gracias. Tu nota ayuda a mejorar el asistente.'); }
+        chips([{ label: 'Hacer otra consulta', run: function () { awaitingComment = false; return menu('Dime qué necesitas.'); } }]);
+      } };
+    }));
+  }
+
+  async function aiReply(text) {
+    hist.push({ role: 'user', content: text });
+    var turns = [{ role: 'user', content: RULES }].concat(hist.slice(-7));
+    var typ = el('div', 'typing', '<i></i><i></i><i></i>'); log.appendChild(typ); scrollDown();
+    var bubble = null;
+    try {
+      var r = await sampleFn(turns, { cache: false, modelTier: 'quick', onText: function (o) {
+        if (!bubble) { typ.remove(); bubble = el('div', 'msg bot'); log.appendChild(bubble); }
+        bubble.textContent = o.text; scrollDown();
+      } });
+      if (!bubble) { typ.remove(); bubble = el('div', 'msg bot'); log.appendChild(bubble); }
+      bubble.textContent = r.text; scrollDown();
+      hist.push({ role: 'assistant', content: r.text });
+      return true;
+    } catch (e) {
+      typ.remove(); if (bubble) bubble.remove(); hist.pop();
+      if (e && e.code === 'not_granted') sampleFn = null;
+      return false;
+    }
+  }
+
+  function fmtHora(h, min) { return (h % 12 || 12) + ':' + pad(min) + ' ' + (h >= 12 ? 'p. m.' : 'a. m.'); }
+  function horaRespuesta(q) {
+    var m = q.match(/a ?las?\s*(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm|a ?m|p ?m)?/);
+    if (!m) return null;
+    var h = +m[1], min = m[2] ? +m[2] : 0, suf = m[3] || '';
+    if (/p/.test(suf)) h = h % 12 + 12; else if (/a/.test(suf)) h = h % 12; else if (h >= 1 && h <= 7) h += 12;
+    if (h > 23 || min > 59) return null;
+    var t = h + min / 60, svc = [['la ventanilla', 8, 13], ['la consulta externa', 7.5, 13], ['la farmacia', 8, 19]];
+    var open = svc.filter(function (s) { return t >= s[1] && t < s[2]; }).map(function (s) { return s[0]; });
+    var closed = svc.filter(function (s) { return !(t >= s[1] && t < s[2]); }).map(function (s) { return s[0]; });
+    var hora = fmtHora(h, min), msg;
+    if (!open.length) msg = 'A las ' + hora + ' ya estaría todo cerrado.';
+    else if (!closed.length) msg = 'A las ' + hora + ' están abiertas ' + open.join(', ') + '.';
+    else msg = 'A las ' + hora + ' atiende ' + open.join(' y ') + ', pero ya cerró ' + closed.join(' y ') + '.';
+    return msg + ' Son horarios de ejemplo, de lunes a viernes. Te conviene ir entre las 10:00 y las 12:00, cuando hay menos gente.';
+  }
+  async function rulesRoute(text) {
+    var q = norm(text);
+    var h = horaRespuesta(q);
+    if (h) { await bot(h); chips([{ label: 'Ver horarios', run: flowHorarios }, { label: 'Eso era todo', run: decision }]); return; }
+    if (fz(q, ['persona', 'humano', 'asesor', 'llamar', 'telefono', 'recepcion'])) return flowPersona();
+    if (fz(q, ['cancelar', 'consultar', 'reprogramar']) || /mi cita|mis citas/.test(q)) return irA('mis-citas', 'Ahí pones tu DNI y ves, cancelas o reprogramas tu cita.');
+    if (fz(q, ['cita', 'turno', 'agendar', 'reservar', 'reserva'])) return irA('cita', 'Te llevo al formulario. Son 3 pasos y no necesitas crear cuenta.');
+    if (fz(q, ['horario', 'horarios', 'hora', 'atienden', 'atiende', 'abre', 'abierto', 'cierra'])) return flowHorarios();
+    if (fz(q, ['requisito', 'requisitos', 'documento', 'documentos', 'papeles', 'carnet', 'historia', 'certificado', 'costo', 'precio', 'cuanto'])) return flowRequisitos();
+    if (fz(q, ['gracias'])) return bot('De nada. Aquí estoy cuando me necesites.');
+    if (fz(q, ['hola', 'buenas', 'hey'])) return menu('Hola. ¿Qué necesitas resolver?');
+    return menu('No te entendí bien. Elige una de estas opciones:');
+  }
+  async function route(text) {
+    if (awaitingComment) {
+      awaitingComment = false;
+      await bot('Anotado, gracias por contarnos.');
+      chips([{ label: 'Hacer otra consulta', run: function () { return menu('Dime qué necesitas.'); } }]);
+      return;
+    }
+    if (sampleFn) {
+      var ok = await aiReply(text);
+      if (ok) {
+        chips([
+          { label: 'Agendar mi cita', run: function () { return irA('cita', 'Vamos a agendar.'); } },
+          { label: 'Ver opciones', run: function () { return menu('Elige lo que necesites.'); } },
+          { label: 'Eso era todo', run: decision }
+        ]);
+        return;
+      }
+    }
+    await rulesRoute(text);
+  }
+  cform.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var v = cinput.value.trim();
+    if (!v || busy) return;
+    cinput.value = ''; clearChips(); user(v);
+    busy = true;
+    try { await route(v); } finally { busy = false; scrollDown(); }
+  });
+  async function start() {
+    busy = true;
+    await bot('Hola, soy el asistente de AltoqueSalud. Escribe tu duda como te salga o elige una opción.', 400);
+    await menu('¿Qué necesitas resolver?');
+    busy = false;
+  }
+
+  /* ================= PROYECTO ================= */
+  var ptabs = document.querySelectorAll('.ptab');
+  function showPt(id) {
+    Array.prototype.forEach.call(ptabs, function (t) { t.setAttribute('aria-selected', t.getAttribute('data-pt') === id ? 'true' : 'false'); });
+    ['problema', 'solucion', 'bocetos', 'pruebas', 'informe'].forEach(function (p) { $('pt-' + p).hidden = (p !== id); });
+    if (id === 'informe') refreshInformeEstado();
+  }
+  Array.prototype.forEach.call(ptabs, function (t) { t.addEventListener('click', function () { showPt(t.getAttribute('data-pt')); }); });
+
+  var RATINGS = [['ease', '¿Es fácil usar la interfaz?'], ['clear', '¿Se entiende para qué sirve sin que se lo expliquen?'], ['use', '¿Lo usarías en lugar de ir a pedir tu cita al centro?']];
+  var TEXTS = [['like', '¿Qué les gustó?'], ['confuse', '¿Qué les confundió o no entendieron?'], ['improve', '¿Qué mejorarían?'], ['failed', '¿Qué salió mal o no funcionó durante la prueba?']];
+
+  function groupHTML(i) {
+    var g = state.groups[i];
+    var h = '<div class="card" data-g="' + i + '"><h3>Grupo visitado ' + (i + 1) + '<span class="gbadge" data-badge></span></h3>';
+    h += '<label class="field"><span>Nombre del grupo</span><input type="text" data-f="name" value="' + esc(g.name) + '" placeholder="Ej.: Grupo 5"></label>';
+    h += '<label class="field"><span>¿Quién lo probó?</span><input type="text" data-f="who" value="' + esc(g.who) + '" placeholder="Nombre de la persona que usó el prototipo"></label>';
+    h += '<p class="q">Fotos de evidencia</p><div class="thumbs" data-thumbs></div>';
+    h += '<label class="btn out sm" style="cursor:pointer">Agregar foto<input type="file" accept="image/*" hidden data-photo></label>';
+    h += '<p class="note" style="margin-top:6px">Toma la foto mientras el otro grupo usa el prototipo. Máximo 3 por grupo.</p>';
+    RATINGS.forEach(function (r) {
+      h += '<p class="q">' + r[1] + '</p><div class="rate">';
+      for (var n = 1; n <= 5; n++) h += '<button type="button" class="pill small" data-r="' + r[0] + '" data-v="' + n + '" aria-pressed="' + (g[r[0]] === n) + '">' + n + '</button>';
+      h += '</div>';
+    });
+    h += '<p class="q">¿Cuál prefieren?</p><div class="rate"><button type="button" class="pill small" data-pref="A" aria-pressed="' + (g.pref === 'A') + '">A: asistente de chat</button><button type="button" class="pill small" data-pref="B" aria-pressed="' + (g.pref === 'B') + '">B: agenda web</button></div>';
+    TEXTS.forEach(function (t) { h += '<label class="field"><span>' + t[1] + '</span><textarea data-f="' + t[0] + '">' + esc(g[t[0]]) + '</textarea></label>'; });
+    return h + '</div>';
+  }
+  function renderThumbs(i) {
+    var box = document.querySelector('#groups [data-g="' + i + '"] [data-thumbs]'); box.innerHTML = '';
+    state.groups[i].photos.forEach(function (src, k) {
+      var d = el('div', 'thumb'), img = el('img'); img.src = src; img.alt = 'Foto de evidencia ' + (k + 1) + ' del grupo ' + (i + 1);
+      var b = el('button', null, '×'); b.type = 'button'; b.setAttribute('data-rm', k); b.setAttribute('aria-label', 'Quitar foto');
+      d.appendChild(img); d.appendChild(b); box.appendChild(d);
+    });
+  }
+  function missing(i) {
+    var g = state.groups[i], m = [];
+    if (!g.name.trim()) m.push('nombre');
+    if (!g.photos.length) m.push('foto');
+    if (!(g.ease && g.clear && g.use)) m.push('calificaciones');
+    if (!g.pref) m.push('preferencia');
+    if (!(g.like.trim() && g.confuse.trim() && g.improve.trim())) m.push('comentarios');
+    return m;
+  }
+  function updateBadges() {
+    [0, 1].forEach(function (i) {
+      var b = document.querySelector('#groups [data-g="' + i + '"] [data-badge]'), m = missing(i);
+      b.textContent = m.length ? 'Falta: ' + m.join(', ') : 'Completo'; b.className = 'gbadge' + (m.length ? '' : ' ok');
+    });
+  }
+  $('groups').innerHTML = groupHTML(0) + groupHTML(1);
+  renderThumbs(0); renderThumbs(1); updateBadges();
+
+  function resizeImg(file, cb) {
+    var r = new FileReader();
+    r.onload = function () {
+      var im = new Image();
+      im.onload = function () {
+        var s = Math.min(1, 640 / Math.max(im.width, im.height)), c = document.createElement('canvas');
+        c.width = Math.round(im.width * s); c.height = Math.round(im.height * s);
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        cb(c.toDataURL('image/jpeg', 0.72));
+      };
+      im.src = r.result;
+    };
+    r.readAsDataURL(file);
+  }
+  var pg = $('groups');
+  pg.addEventListener('input', function (e) {
+    var f = e.target.getAttribute && e.target.getAttribute('data-f'); if (!f) return;
+    var i = +e.target.closest('[data-g]').getAttribute('data-g');
+    state.groups[i][f] = e.target.value; persist(); updateBadges();
+  });
+  pg.addEventListener('click', function (e) {
+    var t = e.target, box = t.closest('[data-g]'); if (!box) return;
+    var i = +box.getAttribute('data-g'), g = state.groups[i];
+    if (t.hasAttribute('data-r')) {
+      var f = t.getAttribute('data-r'), v = +t.getAttribute('data-v'); g[f] = g[f] === v ? 0 : v;
+      Array.prototype.forEach.call(box.querySelectorAll('[data-r="' + f + '"]'), function (b) { b.setAttribute('aria-pressed', String(+b.getAttribute('data-v') === g[f])); });
+    } else if (t.hasAttribute('data-pref')) {
+      var p = t.getAttribute('data-pref'); g.pref = g.pref === p ? '' : p;
+      Array.prototype.forEach.call(box.querySelectorAll('[data-pref]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pref') === g.pref)); });
+    } else if (t.hasAttribute('data-rm')) { g.photos.splice(+t.getAttribute('data-rm'), 1); renderThumbs(i); }
+    else return;
+    persist(); updateBadges();
+  });
+  pg.addEventListener('change', function (e) {
+    var t = e.target; if (!t.hasAttribute || !t.hasAttribute('data-photo')) return;
+    var i = +t.closest('[data-g]').getAttribute('data-g'), g = state.groups[i], file = t.files && t.files[0];
+    t.value = '';
+    if (!file) return;
+    if (g.photos.length >= 3) { $('saveNote').textContent = 'Ya tienes 3 fotos en este grupo. Quita una para agregar otra.'; return; }
+    resizeImg(file, function (data) { g.photos.push(data); if (!persist()) g.photos.pop(); renderThumbs(i); updateBadges(); });
+  });
+
+  /* ----- Informe ----- */
+  function words(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
+  function refreshCount() { $('palabras').textContent = words($('informe').value) + ' palabras (meta: 300)'; }
+  function refreshInformeEstado() {
+    var done = [0, 1].filter(function (i) { return !missing(i).length; }).length;
+    $('informeEstado').textContent = 'Pruebas completas: ' + done + ' de 2';
+  }
+  $('informe').value = state.informe; refreshCount();
+  $('informe').addEventListener('input', function () { state.informe = $('informe').value; persist(); refreshCount(); });
+
+  function clean(s) { return s.trim().replace(/[.\s]+$/, ''); }
+  function joinTexts(f) { return state.groups.map(function (g) { return clean(g[f]); }).filter(Boolean).join('. Otro grupo dijo que '); }
+  function avg(f) { var v = state.groups.map(function (g) { return g[f]; }).filter(Boolean); return v.length ? (v.reduce(function (a, b) { return a + b; }, 0) / v.length).toFixed(1).replace('.', ',') : null; }
+  function plantilla() {
+    var g = state.groups, nm = g.map(function (x, i) { return x.name.trim() || ('el grupo ' + (i + 1)); }).join(' y ');
+    var a = g.filter(function (x) { return x.pref === 'A'; }).length, b = g.filter(function (x) { return x.pref === 'B'; }).length;
+    var like = joinTexts('like'), conf = joinTexts('confuse'), imp = joinTexts('improve'), fail = joinTexts('failed'), ease = avg('ease'), use = avg('use'), p = [];
+    p.push('Presentamos AltoqueSalud a ' + nm + '. Cada grupo probó el prototipo A, un asistente de chat, y el prototipo B, una agenda web de citas en tres pasos. Les hicimos preguntas concretas, como si era fácil de usar y si se entendía para qué sirve sin que lo explicáramos.' + (ease ? ' La facilidad de uso quedó en ' + ease + ' de 5' + (use ? ' y las ganas de usarlo en vez de ir al centro, en ' + use + ' de 5.' : '.') : ''));
+    if (like) p.push('Lo que funcionó: ' + like + '.');
+    if (conf || fail) p.push('Lo que no funcionó: ' + [conf, fail].filter(Boolean).join('. ') + '.');
+    if (imp) p.push('Lo que vamos a mejorar: ' + imp + '.');
+    if (a + b) p.push('Sobre las dos versiones, ' + a + ' de ' + (a + b) + ' grupos prefirió el asistente de chat y ' + b + ' la agenda web.');
+    p.push('Equivocarnos nos sirvió. Cada cosa que confundió a otro grupo es algo que nosotros ya no veíamos de tanto mirarlo, y eso solo aparece cuando lo prueba alguien que no participó en el diseño. Preferimos descubrirlo ahora y no cuando un paciente real pierda su cita por una instrucción poco clara.');
+    p.push('En general, la idea de pedir la cita por internet y resolver las dudas antes de ir al centro se entendió y tiene sentido para el problema de las colas. Con los cambios que anotamos, la siguiente versión debería ser más clara y más fácil de usar.');
+    return p.join('\n\n');
+  }
+  async function armar() {
+    var hay = state.groups.some(function (g) { return g.like.trim() || g.confuse.trim() || g.improve.trim() || g.failed.trim(); });
+    if (!hay) { $('informeNota').textContent = 'Primero llena los comentarios de al menos un grupo en la pestaña Pruebas.'; return; }
+    $('informeNota').textContent = '';
+    var btn = $('armar'); btn.disabled = true; var out = null;
+    if (sampleFn) {
+      $('informe').value = 'Escribiendo...';
+      var data = state.groups.map(function (g, i) {
+        return { grupo: g.name || ('Grupo ' + (i + 1)), quien_lo_probo: g.who, facilidad_de_uso_1_a_5: g.ease || null, se_entiende_1_a_5: g.clear || null, lo_usaria_1_a_5: g.use || null, prefiere: g.pref === 'A' ? 'A (asistente de chat)' : g.pref === 'B' ? 'B (agenda web)' : null, les_gusto: g.like, les_confundio: g.confuse, mejorarian: g.improve, salio_mal: g.failed };
+      });
+      var prompt =
+        'Redacta el informe de retroalimentación del proyecto AltoqueSalud, una página web para pedir citas médicas por internet con un asistente de chat que resuelve dudas, pensada para centros de salud del Perú, para un curso universitario. ' +
+        'Prototipo A: asistente de chat. Prototipo B: agenda web de citas en 3 pasos. ' +
+        'Extensión: entre 290 y 310 palabras. Escribe en primera persona del plural, en párrafos cortos, sin títulos, sin listas y sin negritas. ' +
+        'Cubre en este orden: qué se probó y con quién, fortalezas, debilidades, mejoras concretas, qué aprendimos del fracaso (el error como aprendizaje) y una conclusión general. ' +
+        'Usa solo los datos de abajo. No inventes cifras, nombres ni comentarios que no estén ahí. ' +
+        'Estilo: estudiante peruano, claro y natural, con frases de largo variado. Evita las rayas largas, las construcciones "no solo... sino", enumerar siempre de a tres, palabras grandilocuentes como fundamental, crucial, clave o panorama, y cualquier cierre motivacional exagerado. ' +
+        'Devuelve únicamente el texto del informe.\n\nDatos de las pruebas:\n' + JSON.stringify(data, null, 1);
+      try {
+        var r = await sampleFn(prompt, { cache: false, modelTier: 'default', onText: function (o) { $('informe').value = o.text; refreshCount(); } });
+        out = r.text.trim();
+      } catch (e) { if (e && e.code === 'not_granted') sampleFn = null; out = null; }
+    }
+    if (!out) { out = plantilla(); $('informeNota').textContent = 'Es un borrador armado con tus datos. Ajústalo con tus palabras y llévalo a unas 300 palabras.'; }
+    else { $('informeNota').textContent = 'Revísalo y ponlo en tus palabras antes de entregarlo. Si sobran o faltan palabras, edítalo aquí mismo.'; }
+    $('informe').value = out; state.informe = out; persist(); refreshCount(); btn.disabled = false;
+  }
+  $('armar').addEventListener('click', armar);
+  $('copiar').addEventListener('click', function () {
+    var ta = $('informe'); ta.select(); var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    $('informeNota').textContent = ok ? 'Informe copiado.' : 'No pude copiarlo automáticamente. Selecciona el texto y cópialo.';
+  });
+  $('bajar').addEventListener('click', async function () {
+    var txt = $('informe').value.trim(); if (!txt || !dl) return;
+    try { await dl.save({ filename: 'informe-retroalimentacion-AltoqueSalud.txt', data: txt }); }
+    catch (e) { if (!e || e.code !== 'declined') $('informeNota').textContent = 'No pude descargarlo. Usa el botón Copiar.'; }
+  });
+
+  var MIEMBROS = ['Jair Yarahuaman', 'Josue Eli Silva Ramirez', 'Favio Shapiama Rodriguez', 'Dan Torres Ventura', 'Mary Vasquez Poma', 'Britany Velazquez Aquije'];
+  MIEMBROS.forEach(function (n) {
+    var l = el('label'); l.innerHTML = '<span>' + esc(n) + '</span>';
+    var i = el('input'); i.type = 'text'; i.placeholder = 'Rol: bocetos, pruebas, informe...'; i.setAttribute('aria-label', 'Rol de ' + n); i.value = state.team[n] || '';
+    i.addEventListener('input', function () { state.team[n] = i.value; persist(); });
+    l.appendChild(i); $('team').appendChild(l);
+  });
+
+  /* ---------- Inicio ---------- */
+  resetBooking();
+  go('inicio');
+})();
+</script>
+</body>
+</html>
